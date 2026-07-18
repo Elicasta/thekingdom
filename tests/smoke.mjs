@@ -1,49 +1,59 @@
-import assert from "node:assert/strict";
-import fs from "node:fs";
-import path from "node:path";
-import vm from "node:vm";
-import { fileURLToPath } from "node:url";
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(here, "..");
-const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
+const root = path.resolve(here, '..');
 
-const html = read("index.html");
-const css = read("styles.css");
-const js = read("app.js");
-const config = read("config.js");
-const sql = read("supabase/setup.sql");
-const sw = read("sw.js");
+const lessonSource = fs.readFileSync(path.join(root, 'lesson.js'), 'utf8');
+const context = { window: {} };
+vm.createContext(context);
+vm.runInContext(lessonSource, context);
+const lesson = context.window.KINGDOM_LESSON;
 
-assert.match(html, /The Kingdom/);
-assert.match(html, /When the Kingdom Falls/);
-assert.match(html, /id="view-polls"/);
-assert.match(html, /id="view-reflect"/);
-assert.match(html, /src="config\.js"/);
-assert.match(html, /Anonymous response/);
-assert.match(html, /<span class="feature-number">12<\/span>/);
-assert.match(css, /--ember:\s*#d65f3e/i);
-assert.match(css, /\.poll-results/);
-assert.doesNotMatch(`${html}\n${css}\n${js}`, /The Ministry|Matthew 10 Series|tm_name/i);
-assert.equal((js.match(/type: "poll"/g) || []).length, 3);
-assert.equal((js.match(/label: "/g) || []).length >= 23, true);
-assert.match(js, /submit_kingdom_poll_vote/);
-assert.match(js, /get_kingdom_poll_results/);
-assert.match(js, /clear_kingdom_poll_votes/);
-assert.match(js, /if \(\/\^eyJ\/i\.test\(APP_CONFIG\.supabasePublishableKey\)\)/);
-assert.match(js, /Reflection answers still remain only on this phone/);
-assert.match(config, /supabasePublishableKey/);
-assert.doesNotMatch(config, /sb_secret_|eyJ[a-zA-Z0-9_-]{20,}/);
-assert.match(sql, /enable row level security/i);
-assert.match(sql, /security definer/gi);
-assert.match(sql, /revoke all on table public\.kingdom_poll_votes/i);
-assert.match(sql, /grant execute on function public\.submit_kingdom_poll_vote/i);
-assert.match(sql, /grant execute on function public\.clear_kingdom_poll_votes/i);
-assert.match(sql, /unique \(poll_id, device_id\)/i);
-assert.match(sw, /config\.js/);
-assert.match(sw, /cache: "no-store"/);
+assert.equal(lesson.title, 'When the Kingdom Falls');
+assert.equal(lesson.series, 'The Kingdom');
+assert.equal(lesson.slides.length, 23, 'Expected exactly 23 slides');
+assert.equal(lesson.polls.length, 3, 'Expected exactly 3 lesson polls');
+assert.equal(lesson.reflectionGroups.length, 5, 'Expected five reflection groups');
+assert.equal(lesson.slides[0].type, 'title');
+assert.equal(lesson.slides[0].title, 'When the Kingdom Falls');
+assert.equal(lesson.slides.at(-1).type, 'closing');
 
-new vm.Script(js, { filename: "app.js" });
-new vm.Script(config, { filename: "config.js" });
-new vm.Script(sw, { filename: "sw.js" });
-console.log("Smoke checks passed.");
+const appSource = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+for (const route of ['/projector', '/scriptures', '/confidence', '/obslowerthirds', '/obsslides', '/admin', '/remote', '/questions', '/polls']) {
+  assert.ok(appSource.includes(route.slice(1)), `Missing route support for ${route}`);
+}
+
+const requiredFiles = [
+  'index.html',
+  'styles.css',
+  'app.js',
+  'lesson.js',
+  'vercel.json',
+  'supabase/setup.sql',
+  'api/admin-login.js',
+  'api/admin-state.js',
+  'api/admin-poll.js',
+  'api/admin-questions.js',
+  'api/poll-vote.js',
+  'api/question-submit.js',
+  'assets/kingdom-bg.png'
+];
+for (const file of requiredFiles) {
+  assert.ok(fs.existsSync(path.join(root, file)), `Missing ${file}`);
+}
+
+const allTextFiles = requiredFiles
+  .filter(file => !file.endsWith('.png'))
+  .map(file => fs.readFileSync(path.join(root, file), 'utf8'))
+  .join('\n');
+assert.ok(!/the ministry/i.test(allTextFiles), 'Old visible series branding remains');
+assert.ok(!/product launch/i.test(allTextFiles), 'Product-launch language remains');
+
+const titleRenderSegment = appSource.slice(appSource.indexOf("case 'title':"), appSource.indexOf("case 'statement':"));
+assert.equal((titleRenderSegment.match(/slide-title/g) || []).length, 1, 'Title slide should render one title element');
+
+console.log('The Kingdom smoke tests passed.');

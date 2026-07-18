@@ -1,5 +1,5 @@
-window.KINGDOM_CONFIG = Object.freeze({
-  supabaseUrl: "https://your-project-ref.supabase.co",
-  supabasePublishableKey: "sb_publishable_your_public_key",
-  pollRefreshMs: 5000
-});
+// Optional local-only fallback. Production reads /api/config from Vercel env vars.
+window.KINGDOM_CONFIG = {
+  supabaseUrl: '',
+  supabaseAnonKey: ''
+};
