@@ -12,8 +12,18 @@ assert.ok(appSource.includes('/api/public-poll-results'), 'Missing public poll-r
 assert.ok(appSource.includes('return realtimeSubscribed ? 2000 : 300'), 'Fallback state polling should target 300 ms');
 assert.ok(appSource.includes("updateConnectionUI('realtime')"), 'Realtime status handling missing');
 
+assert.ok(appSource.includes('poll_prompt_visible'), 'Projector poll prompt state missing');
+assert.ok(appSource.includes('renderPollPromptOverlay'), 'Projector poll prompt renderer missing');
+assert.ok(appSource.includes('slide_index: slideIndex'), 'Poll launch must send its matching slide index');
+
 const adminStateSource = fs.readFileSync(path.join(root, 'api/admin-state.js'), 'utf8');
 assert.ok(adminStateSource.includes('Math.min(32'), 'Admin state must allow all 33 slides');
+assert.ok(adminStateSource.includes('poll_prompt_visible'), 'Admin state must accept projector poll prompts');
+
+const adminPollSource = fs.readFileSync(path.join(root, 'api/admin-poll.js'), 'utf8');
+assert.ok(adminPollSource.includes('poll_prompt_visible: true'), 'Launching a poll must display its prompt');
+assert.ok(adminPollSource.includes('current_slide = slideIndex') || adminPollSource.includes('patch.current_slide = slideIndex'), 'Launching a poll must move to its matching slide');
+assert.ok(adminPollSource.includes('closeLivePolls'), 'Launching a poll must close stale live polls');
 
 const serverSource = fs.readFileSync(path.join(root, 'lib/supabase.js'), 'utf8');
 assert.ok(serverSource.includes('https://jxddmdtwcosxljjkzcvc.supabase.co'), 'Known Supabase project URL fallback missing');
@@ -21,7 +31,8 @@ assert.ok(serverSource.includes('https://jxddmdtwcosxljjkzcvc.supabase.co'), 'Kn
 const required = [
   'api/public-state.js',
   'api/public-poll-results.js',
-  'supabase/fix-cross-network-sync.sql'
+  'supabase/fix-cross-network-sync.sql',
+  'supabase/fix-poll-projector.sql'
 ];
 for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), `Missing ${file}`);
 

@@ -336,6 +336,20 @@ a { color: inherit; }
 .scripture-overlay-ref { color: var(--accent); font-family: var(--condensed); font-size: clamp(.8rem, 1.2vw, 1.1rem); font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .scripture-overlay-text { margin-top: 6px; font-family: var(--condensed); font-size: clamp(1.25rem, 2.1vw, 2.3rem); font-weight: 600; line-height: 1.15; }
 
+.poll-prompt-overlay {
+  position: absolute;
+  z-index: 94;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 6vw;
+  background: linear-gradient(145deg, rgba(5,8,12,.97), rgba(18,31,42,.97) 62%, rgba(53,24,19,.97));
+}
+.poll-prompt-card { width: min(1400px, 94vw); }
+.poll-projector-options { margin-top: 34px; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.poll-projector-option { border: 1px solid rgba(239,231,215,.24); padding: 20px 24px; font-family: var(--condensed); font-size: clamp(1.35rem, 2.4vw, 2.8rem); font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,.025); }
+.poll-projector-note { margin-top: 24px; color: var(--accent); font-family: var(--condensed); font-size: clamp(1rem, 1.5vw, 1.4rem); font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+
 .poll-results-overlay {
   position: absolute;
   z-index: 95;
@@ -505,7 +519,7 @@ a { color: inherit; }
   .hub-grid { width: min(100% - 22px, 1180px); margin-top: 14px; }
   .card { padding: 17px; }
   .route-links { grid-template-columns: 1fr; }
-  .poll-slide-options, .contrast-grid { grid-template-columns: 1fr; }
+  .poll-slide-options, .poll-projector-options, .contrast-grid { grid-template-columns: 1fr; }
   .contrast-box { min-height: 210px; }
   .slide { padding: 42px 28px; }
   .slide::after { inset: 12px; }

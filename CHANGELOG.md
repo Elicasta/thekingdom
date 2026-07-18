@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.0
+
+- Fixed poll launch so the live question appears immediately on `/projector`.
+- Added a dedicated projector poll-prompt state that syncs across devices and networks.
+- Launching a lesson poll now jumps to its matching poll slide when one exists.
+- The app-only Relief or Surrender poll now displays as a full-screen projector prompt.
+- Moving to another slide hides the projector poll prompt while keeping audience voting open.
+- Showing results replaces the prompt with the live result screen.
+- Closing a poll clears both prompt and result output.
+- Added a safe Supabase migration for existing projects.
+- Closed stale live polls when a new poll launches.
+
 ## 1.2.0
 
 - Bound the build to Supabase project `jxddmdtwcosxljjkzcvc`.

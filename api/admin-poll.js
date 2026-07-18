@@ -13,6 +13,14 @@ function sanitizePoll(poll) {
   return { id, question, options };
 }
 
+async function closeLivePolls() {
+  await supabaseRequest('polls?status=eq.live', {
+    method: 'PATCH',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({ status: 'closed', updated_at: new Date().toISOString() })
+  });
+}
+
 async function upsertPoll(poll, status = 'live') {
   await supabaseRequest('polls?on_conflict=id', {
     method: 'POST',
@@ -34,19 +42,32 @@ export default async function handler(req, res) {
 
   const action = clean(req.body?.action, 40);
   const pollId = clean(req.body?.poll_id || req.body?.poll?.id, 120);
+  const rawSlideIndex = req.body?.slide_index;
+  const slideIndex = rawSlideIndex === null || rawSlideIndex === undefined || rawSlideIndex === ''
+    ? null
+    : Math.max(0, Math.min(32, Number(rawSlideIndex) || 0));
 
   try {
     let state = await getState();
     if (action === 'launch') {
       const poll = sanitizePoll(req.body?.poll);
+      await closeLivePolls();
       await upsertPoll(poll, 'live');
-      state = await patchState({ active_poll_id: poll.id, poll_results_visible: false });
+      const patch = {
+        active_poll_id: poll.id,
+        poll_prompt_visible: true,
+        poll_results_visible: false,
+        started: true,
+        blackout: false
+      };
+      if (slideIndex !== null) patch.current_slide = slideIndex;
+      state = await patchState(patch);
     } else if (action === 'show_results') {
       if (!pollId) throw new Error('Poll id required');
       if (req.body?.poll) await upsertPoll(sanitizePoll(req.body.poll), 'live');
-      state = await patchState({ active_poll_id: pollId, poll_results_visible: true });
+      state = await patchState({ active_poll_id: pollId, poll_prompt_visible: false, poll_results_visible: true, started: true, blackout: false });
     } else if (action === 'hide_results') {
-      state = await patchState({ poll_results_visible: false });
+      state = await patchState({ poll_prompt_visible: false, poll_results_visible: false });
     } else if (action === 'close') {
       if (pollId) {
         await supabaseRequest(`polls?id=eq.${encodeURIComponent(pollId)}`, {
@@ -56,7 +77,7 @@ export default async function handler(req, res) {
         });
       }
       const clearActive = !pollId || state?.active_poll_id === pollId;
-      state = clearActive ? await patchState({ active_poll_id: null, poll_results_visible: false }) : state;
+      state = clearActive ? await patchState({ active_poll_id: null, poll_prompt_visible: false, poll_results_visible: false }) : state;
     } else if (action === 'reset') {
       if (!pollId) throw new Error('Poll id required');
       await supabaseRequest(`poll_votes?poll_id=eq.${encodeURIComponent(pollId)}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });

@@ -3,7 +3,7 @@ import { getState, patchState, requireSupabase } from '../lib/supabase.js';
 
 const ALLOWED = new Set([
   'current_slide', 'started', 'started_at', 'blackout', 'active_scripture',
-  'scripture_visible', 'active_poll_id', 'poll_results_visible', 'reload_token'
+  'scripture_visible', 'active_poll_id', 'poll_prompt_visible', 'poll_results_visible', 'reload_token'
 ]);
 
 function sanitize(body) {
@@ -11,7 +11,7 @@ function sanitize(body) {
   for (const [key, value] of Object.entries(body || {})) {
     if (!ALLOWED.has(key)) continue;
     if (key === 'current_slide') patch[key] = Math.max(0, Math.min(32, Number(value) || 0));
-    else if (['started', 'blackout', 'scripture_visible', 'poll_results_visible'].includes(key)) patch[key] = Boolean(value);
+    else if (['started', 'blackout', 'scripture_visible', 'poll_prompt_visible', 'poll_results_visible'].includes(key)) patch[key] = Boolean(value);
     else if (key === 'reload_token') patch[key] = Math.max(0, Number(value) || 0);
     else if (key === 'active_scripture') patch[key] = value && typeof value === 'object' ? value : null;
     else if (key === 'active_poll_id') patch[key] = value ? String(value).slice(0, 120) : null;

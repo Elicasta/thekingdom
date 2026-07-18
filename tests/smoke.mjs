@@ -50,6 +50,7 @@ const requiredFiles = [
   'vercel.json',
   'supabase/setup.sql',
   'supabase/update-lesson-egypt-jerusalem.sql',
+  'supabase/fix-poll-projector.sql',
   'api/admin-login.js',
   'api/admin-state.js',
   'api/admin-poll.js',

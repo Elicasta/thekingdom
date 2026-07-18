@@ -40,6 +40,10 @@ This build restores the presentation-system structure of the original project ra
 
 Double-click any output route to enter or leave browser fullscreen.
 
+## Poll projector repair for existing projects
+
+If Supabase was configured before version 1.3.0, run `supabase/fix-poll-projector.sql` once. It adds the `poll_prompt_visible` state field used to put a launched poll on the projector.
+
 ## Supabase setup
 
 This build is already bound to project `jxddmdtwcosxljjkzcvc`.

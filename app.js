@@ -19,6 +19,7 @@
     active_scripture: null,
     scripture_visible: false,
     active_poll_id: null,
+    poll_prompt_visible: false,
     poll_results_visible: false,
     reload_token: 0,
     updated_at: new Date().toISOString()
@@ -194,6 +195,11 @@
     return LESSON.polls.find(p => p.id === state.active_poll_id) || null;
   }
 
+  function pollSlideIndex(pollId) {
+    const index = LESSON.slides.findIndex(slide => slide.type === 'poll' && slide.pollId === pollId);
+    return index >= 0 ? index : null;
+  }
+
   function deviceToken() {
     const key = 'kingdom_device_token';
     let token = localStorage.getItem(key);
@@ -328,7 +334,9 @@
     if (state.scripture_visible && state.active_scripture) {
       html += `<div class="scripture-overlay"><div class="scripture-overlay-ref">${escapeHTML(state.active_scripture.ref)} · KJV</div><div class="scripture-overlay-text">${escapeHTML(state.active_scripture.text)}</div></div>`;
     }
-    if (state.poll_results_visible && currentPoll()) html += renderPollResultsOverlay(currentPoll());
+    const activePoll = currentPoll();
+    if (state.poll_prompt_visible && activePoll) html += renderPollPromptOverlay(activePoll);
+    if (state.poll_results_visible && activePoll) html += renderPollResultsOverlay(activePoll);
     if (state.blackout) html += '<div class="output-blackout"></div>';
     root.innerHTML = html;
   }
@@ -529,7 +537,7 @@
         return `<article class="poll-admin-card"><div class="poll-admin-question">${escapeHTML(poll.question)}</div>
           <div class="poll-result-mini">${renderMiniResults(poll, results)}</div>
           <div class="poll-admin-actions">
-            <button class="mini-btn${isActive ? ' good' : ''}" data-action="launch-poll" data-poll-id="${escapeHTML(poll.id)}">${isActive ? 'Live' : 'Launch'}</button>
+            <button class="mini-btn${isActive ? ' good' : ''}" data-action="launch-poll" data-poll-id="${escapeHTML(poll.id)}">${isActive ? 'Live on Projector' : 'Launch to Projector'}</button>
             ${remote ? '' : `<button class="mini-btn" data-action="show-poll-results" data-poll-id="${escapeHTML(poll.id)}">Show Results</button><button class="mini-btn" data-action="hide-poll-results">Hide Results</button>`}
             <button class="mini-btn" data-action="close-poll" data-poll-id="${escapeHTML(poll.id)}">Close</button>
             ${remote ? '' : `<button class="mini-btn" data-action="reset-poll" data-poll-id="${escapeHTML(poll.id)}">Reset</button>`}
@@ -641,7 +649,7 @@
   function updatePollsPage() {
     const grid = document.getElementById('polls-page-grid');
     if (!grid) return;
-    grid.innerHTML = LESSON.polls.map(poll => `<section class="card"><div class="card-kicker">${state.active_poll_id === poll.id ? 'Live' : 'Lesson Poll'}</div><h2 class="card-title">${escapeHTML(poll.question)}</h2>${renderLargeResults(poll)}<div class="poll-admin-actions"><button class="mini-btn" data-action="launch-poll" data-poll-id="${escapeHTML(poll.id)}">Launch</button><button class="mini-btn" data-action="show-poll-results" data-poll-id="${escapeHTML(poll.id)}">Show on Projector</button><button class="mini-btn" data-action="close-poll" data-poll-id="${escapeHTML(poll.id)}">Close</button><button class="mini-btn" data-action="reset-poll" data-poll-id="${escapeHTML(poll.id)}">Reset</button></div></section>`).join('');
+    grid.innerHTML = LESSON.polls.map(poll => `<section class="card"><div class="card-kicker">${state.active_poll_id === poll.id ? 'Live' : 'Lesson Poll'}</div><h2 class="card-title">${escapeHTML(poll.question)}</h2>${renderLargeResults(poll)}<div class="poll-admin-actions"><button class="mini-btn" data-action="launch-poll" data-poll-id="${escapeHTML(poll.id)}">Launch to Projector</button><button class="mini-btn" data-action="show-poll-results" data-poll-id="${escapeHTML(poll.id)}">Show on Projector</button><button class="mini-btn" data-action="close-poll" data-poll-id="${escapeHTML(poll.id)}">Close</button><button class="mini-btn" data-action="reset-poll" data-poll-id="${escapeHTML(poll.id)}">Reset</button></div></section>`).join('');
   }
 
   function renderLargeResults(poll) {
@@ -653,6 +661,10 @@
       const pct = total ? Math.round((count / total) * 100) : 0;
       return `<div class="poll-result-row"><div class="poll-result-top"><span>${escapeHTML(option)}</span><span>${count} · ${pct}%</span></div><div class="poll-result-track"><div class="poll-result-fill" style="width:${pct}%"></div></div></div>`;
     }).join('')}<div class="poll-note">${total} response${total === 1 ? '' : 's'}</div></div>`;
+  }
+
+  function renderPollPromptOverlay(poll) {
+    return `<div class="poll-prompt-overlay"><div class="poll-prompt-card"><div class="slide-kicker">Live Poll</div><div class="poll-results-question">${escapeHTML(poll.question)}</div><div class="poll-projector-options">${poll.options.map(option => `<div class="poll-projector-option">${escapeHTML(option)}</div>`).join('')}</div><div class="poll-projector-note">Respond on your phone now</div></div></div>`;
   }
 
   function renderPollResultsOverlay(poll) {
@@ -885,15 +897,15 @@
   }
 
   async function startPresentation() {
-    await patchState({ current_slide: 0, started: true, started_at: new Date().toISOString(), blackout: false });
+    await patchState({ current_slide: 0, started: true, started_at: new Date().toISOString(), blackout: false, poll_prompt_visible: false, poll_results_visible: false });
   }
 
   async function standbyPresentation() {
-    await patchState({ started: false, current_slide: 0, blackout: false, scripture_visible: false, active_scripture: null, active_poll_id: null, poll_results_visible: false });
+    await patchState({ started: false, current_slide: 0, blackout: false, scripture_visible: false, active_scripture: null, active_poll_id: null, poll_prompt_visible: false, poll_results_visible: false });
   }
 
   async function clearAll() {
-    await patchState({ blackout: false, scripture_visible: false, active_scripture: null, active_poll_id: null, poll_results_visible: false });
+    await patchState({ blackout: false, scripture_visible: false, active_scripture: null, active_poll_id: null, poll_prompt_visible: false, poll_results_visible: false });
   }
 
   async function pushScripture(id) {
@@ -909,14 +921,32 @@
   async function launchPoll(id) {
     const poll = LESSON.polls.find(item => item.id === id);
     if (!poll) return;
+    const slideIndex = pollSlideIndex(id);
+    const optimistic = {
+      ...state,
+      active_poll_id: id,
+      poll_prompt_visible: true,
+      poll_results_visible: false,
+      started: true,
+      blackout: false,
+      ...(slideIndex === null ? {} : { current_slide: slideIndex })
+    };
+    applyIncomingState(optimistic, true);
     try {
-      const response = await fetch('/api/admin-poll', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'launch', poll }) });
+      const response = await fetch('/api/admin-poll', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'launch', poll, slide_index: slideIndex })
+      });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body.error || 'Poll launch failed');
-      applyIncomingState(body.state || { ...state, active_poll_id: id, poll_results_visible: false }, true);
+      if (body.state) applyIncomingState(body.state, true);
       await refreshPollResults(id);
-      showToast('Poll is live.');
-    } catch (error) { showToast(error.message, true); }
+      showToast('Poll launched to projector.');
+    } catch (error) {
+      showToast(error.message, true);
+      await fetchLatestState(true);
+    }
   }
 
   async function pollAction(action, id = null) {
@@ -1110,9 +1140,9 @@
     if (action === 'scroll-reflections') document.getElementById('reflections')?.scrollIntoView({ behavior: 'smooth' });
     if (action === 'vote') await submitVote(target.dataset.pollId, target.dataset.optionIndex, target);
     if (action === 'submit-question') await submitQuestion();
-    if (action === 'prev') await patchState({ current_slide: clampSlide(state.current_slide - 1), started: true });
-    if (action === 'next') await patchState({ current_slide: clampSlide(state.current_slide + 1), started: true });
-    if (action === 'goto-slide') await patchState({ current_slide: clampSlide(target.dataset.slideIndex), started: true });
+    if (action === 'prev') await patchState({ current_slide: clampSlide(state.current_slide - 1), started: true, poll_prompt_visible: false, poll_results_visible: false });
+    if (action === 'next') await patchState({ current_slide: clampSlide(state.current_slide + 1), started: true, poll_prompt_visible: false, poll_results_visible: false });
+    if (action === 'goto-slide') await patchState({ current_slide: clampSlide(target.dataset.slideIndex), started: true, poll_prompt_visible: false, poll_results_visible: false });
     if (action === 'start') await startPresentation();
     if (action === 'standby') await standbyPresentation();
     if (action === 'toggle-blackout') await patchState({ blackout: !state.blackout });
@@ -1150,8 +1180,8 @@
   document.addEventListener('keydown', event => {
     if (!adminAuthenticated || !['admin', 'remote'].includes(route)) return;
     if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
-    if (event.key === 'ArrowRight' || event.key === ' ') { event.preventDefault(); patchState({ current_slide: clampSlide(state.current_slide + 1), started: true }); }
-    if (event.key === 'ArrowLeft') { event.preventDefault(); patchState({ current_slide: clampSlide(state.current_slide - 1), started: true }); }
+    if (event.key === 'ArrowRight' || event.key === ' ') { event.preventDefault(); patchState({ current_slide: clampSlide(state.current_slide + 1), started: true, poll_prompt_visible: false, poll_results_visible: false }); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); patchState({ current_slide: clampSlide(state.current_slide - 1), started: true, poll_prompt_visible: false, poll_results_visible: false }); }
     if (event.key.toLowerCase() === 'b') patchState({ blackout: !state.blackout });
   });
   if (OUTPUT_ROUTES.has(route)) {

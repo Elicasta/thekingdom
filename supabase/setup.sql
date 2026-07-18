@@ -14,6 +14,7 @@ create table if not exists public.presentation_state (
   active_scripture jsonb,
   scripture_visible boolean not null default false,
   active_poll_id text,
+  poll_prompt_visible boolean not null default false,
   poll_results_visible boolean not null default false,
   reload_token bigint not null default 0,
   updated_at timestamptz not null default now()
@@ -21,6 +22,9 @@ create table if not exists public.presentation_state (
 
 
 -- Keep existing databases aligned with the current 33-slide lesson.
+alter table public.presentation_state
+  add column if not exists poll_prompt_visible boolean not null default false;
+
 alter table public.presentation_state
   drop constraint if exists presentation_state_current_slide_check;
 
