@@ -1,14 +1,14 @@
 # The Kingdom Presentation System
 
-A single-lesson conference presentation hub for **Lesson Two: When the Kingdom Falls**.
+A single-lesson conference presentation hub for **Lesson Two: When the Kingdom Falls**, now framing Egypt and Jerusalem beside each other as two kingdoms responding to the voice of God.
 
 This build restores the presentation-system structure of the original project rather than treating the lesson like a marketing page.
 
 ## What is included
 
 - Public lesson hub with no attendee login
-- 23 remotely controlled presentation slides
-- Anonymous live polls
+- 33 remotely controlled presentation slides
+- Four anonymous live polls
 - Anonymous audience questions
 - Private reflection answers saved only in the attendee's browser
 - Presenter admin login
@@ -60,6 +60,17 @@ SESSION_SECRET=choose-a-different-long-random-secret
 ```
 
 Do not put the service role key in `config.js`, browser code, GitHub, or screenshots.
+
+
+### Existing Supabase project update
+
+If the database already exists from the previous 23-slide build, run:
+
+```text
+supabase/update-lesson-egypt-jerusalem.sql
+```
+
+That updates the slide range to 0 through 32 and seeds the four current polls.
 
 ## Route behavior
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0
+
+- Updated the lesson to the Egypt/Jerusalem two-kingdom structure.
+- Expanded the slide deck from 23 slides to 33 slides.
+- Added Pharaoh’s question from Exodus 5 and the Red Sea warning from Exodus 14.
+- Added the Relief or Surrender poll and Pride as a drift option.
+- Replaced the reflection questions with the new seven-section question set.
+- Updated Supabase setup to allow slides 0 through 32 and seed all four polls.
+
 ## 1.0.1
 
 - Fixed Vercel 404 responses on `/projector` and all permanent presentation routes.

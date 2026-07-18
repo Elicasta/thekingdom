@@ -15,12 +15,16 @@ const lesson = context.window.KINGDOM_LESSON;
 
 assert.equal(lesson.title, 'When the Kingdom Falls');
 assert.equal(lesson.series, 'The Kingdom');
-assert.equal(lesson.slides.length, 23, 'Expected exactly 23 slides');
-assert.equal(lesson.polls.length, 3, 'Expected exactly 3 lesson polls');
-assert.equal(lesson.reflectionGroups.length, 5, 'Expected five reflection groups');
+assert.equal(lesson.slides.length, 33, 'Expected exactly 33 slides');
+assert.equal(lesson.polls.length, 4, 'Expected exactly 4 lesson polls');
+assert.equal(lesson.reflectionGroups.length, 7, 'Expected seven reflection groups');
 assert.equal(lesson.slides[0].type, 'title');
 assert.equal(lesson.slides[0].title, 'When the Kingdom Falls');
 assert.equal(lesson.slides.at(-1).type, 'closing');
+assert.ok(lesson.slides.some(slide => slide.ref === 'Exodus 5:1–2'), 'Missing Pharaoh question slide');
+assert.ok(lesson.polls.some(poll => poll.id === 'relief-or-surrender'), 'Missing relief/surrender poll');
+assert.ok(lesson.reflectionGroups.some(group => group.title === 'Follow the Two Kingdoms'), 'Missing two-kingdom reflection group');
+
 
 const appSource = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const permanentRoutes = ['/projector', '/scriptures', '/confidence', '/obslowerthirds', '/obsslides', '/admin', '/remote', '/questions', '/polls'];
@@ -45,6 +49,7 @@ const requiredFiles = [
   'lesson.js',
   'vercel.json',
   'supabase/setup.sql',
+  'supabase/update-lesson-egypt-jerusalem.sql',
   'api/admin-login.js',
   'api/admin-state.js',
   'api/admin-poll.js',
@@ -63,6 +68,7 @@ const allTextFiles = requiredFiles
   .join('\n');
 assert.ok(!/the ministry/i.test(allTextFiles), 'Old visible series branding remains');
 assert.ok(!/product launch/i.test(allTextFiles), 'Product-launch language remains');
+assert.ok(!/thekingdom5853585/i.test(allTextFiles), 'Stray secret-looking string should not be committed');
 
 const titleRenderSegment = appSource.slice(appSource.indexOf("case 'title':"), appSource.indexOf("case 'statement':"));
 assert.equal((titleRenderSegment.match(/slide-title/g) || []).length, 1, 'Title slide should render one title element');

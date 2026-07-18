@@ -7,7 +7,7 @@ create extension if not exists pgcrypto;
 
 create table if not exists public.presentation_state (
   id text primary key,
-  current_slide integer not null default 0 check (current_slide between 0 and 22),
+  current_slide integer not null default 0 check (current_slide between 0 and 32),
   started boolean not null default false,
   started_at timestamptz,
   blackout boolean not null default false,
@@ -18,6 +18,15 @@ create table if not exists public.presentation_state (
   reload_token bigint not null default 0,
   updated_at timestamptz not null default now()
 );
+
+
+-- Keep existing databases aligned with the current 33-slide lesson.
+alter table public.presentation_state
+  drop constraint if exists presentation_state_current_slide_check;
+
+alter table public.presentation_state
+  add constraint presentation_state_current_slide_check
+  check (current_slide between 0 and 32);
 
 create table if not exists public.polls (
   id text primary key,
@@ -88,7 +97,8 @@ on conflict (id) do nothing;
 insert into public.polls (id, lesson_id, question, options, status)
 values
   ('ignored-warning', 'when-the-kingdom-falls', 'Have you been ignoring a warning God has been giving you?', '["Yes","No","Not sure"]'::jsonb, 'closed'),
-  ('where-drift-happens', 'when-the-kingdom-falls', 'Where does drift happen most for you?', '["Relationships","Private habits","Entertainment","Attitude"]'::jsonb, 'closed'),
+  ('where-drift-happens', 'when-the-kingdom-falls', 'Where does drift happen most for you?', '["Relationships","Private habits","Entertainment","Attitude","Pride"]'::jsonb, 'closed'),
+  ('relief-or-surrender', 'when-the-kingdom-falls', 'What do you want most right now?', '["Relief","Surrender","Both","I’m not sure"]'::jsonb, 'closed'),
   ('mercy-response', 'when-the-kingdom-falls', 'What do you need to do with mercy today?', '["Repent","Ask for prayer","Change a boundary","Talk to a leader"]'::jsonb, 'closed')
 on conflict (id) do update set
   lesson_id = excluded.lesson_id,
