@@ -1,0 +1,13 @@
+{
+  "name": "The Kingdom: When the Kingdom Falls",
+  "short_name": "The Kingdom",
+  "description": "Lesson 2 slides, anonymous live polls, and private reflection questions.",
+  "start_url": "./#home",
+  "display": "standalone",
+  "background_color": "#0b1117",
+  "theme_color": "#101922",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
