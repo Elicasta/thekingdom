@@ -23,9 +23,20 @@ assert.equal(lesson.slides[0].title, 'When the Kingdom Falls');
 assert.equal(lesson.slides.at(-1).type, 'closing');
 
 const appSource = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
-for (const route of ['/projector', '/scriptures', '/confidence', '/obslowerthirds', '/obsslides', '/admin', '/remote', '/questions', '/polls']) {
+const permanentRoutes = ['/projector', '/scriptures', '/confidence', '/obslowerthirds', '/obsslides', '/admin', '/remote', '/questions', '/polls'];
+for (const route of permanentRoutes) {
   assert.ok(appSource.includes(route.slice(1)), `Missing route support for ${route}`);
+  const entry = path.join(root, route.slice(1), 'index.html');
+  assert.ok(fs.existsSync(entry), `Missing physical route entry for ${route}`);
+  assert.equal(fs.readFileSync(entry, 'utf8'), fs.readFileSync(path.join(root, 'index.html'), 'utf8'), `${route} entry must match index.html`);
 }
+
+const vercelConfig = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+const rewrites = new Map((vercelConfig.rewrites || []).map(item => [item.source, item.destination]));
+for (const route of permanentRoutes) {
+  assert.equal(rewrites.get(route), '/index.html', `Missing explicit Vercel rewrite for ${route}`);
+}
+assert.ok(fs.existsSync(path.join(root, '404.html')), 'Missing 404.html app fallback');
 
 const requiredFiles = [
   'index.html',

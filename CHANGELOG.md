@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.1
+
+- Fixed Vercel 404 responses on `/projector` and all permanent presentation routes.
+- Added explicit route rewrites instead of relying on one broad catch-all rule.
+- Added physical route entry files so static hosts can serve each screen without SPA rewrite support.
+- Added a `404.html` application fallback.
+- Added route-file checks to the smoke test.
+
+
 ## 1.0.0
 
 - Rebuilt the project as a presentation and conference control system.

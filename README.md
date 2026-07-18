@@ -61,13 +61,23 @@ SESSION_SECRET=choose-a-different-long-random-secret
 
 Do not put the service role key in `config.js`, browser code, GitHub, or screenshots.
 
+## Route behavior
+
+Every permanent screen route now exists in two forms:
+
+- An explicit Vercel rewrite to `index.html`
+- A physical `/<route>/index.html` fallback
+
+This prevents `/projector`, `/admin`, `/remote`, and the other presentation screens from returning a platform 404 when a host ignores SPA rewrites or a project is imported with static routing.
+
 ## Vercel deployment
 
-1. Upload this folder to a Git repository or import the folder directly into Vercel.
+1. Upload the **contents of this folder at the repository root**. `vercel.json`, `index.html`, `app.js`, and the route folders must all sit at the root.
 2. Add all five environment variables.
 3. Deploy.
 4. Open `/admin` and sign in with `ADMIN_PASSWORD`.
-5. Open each output route on the intended screen.
+5. Open `/projector` directly and confirm the standby screen appears before connecting the other outputs.
+6. Open each remaining output route on the intended screen.
 
 The browser receives only the public Supabase URL and publishable key from `/api/config`. Admin writes go through signed, HTTP-only presenter sessions and server-side API routes.
 

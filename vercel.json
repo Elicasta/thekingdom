@@ -1,8 +1,16 @@
 {
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/projector", "destination": "/index.html" },
+    { "source": "/scriptures", "destination": "/index.html" },
+    { "source": "/confidence", "destination": "/index.html" },
+    { "source": "/obslowerthirds", "destination": "/index.html" },
+    { "source": "/obsslides", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/index.html" },
+    { "source": "/remote", "destination": "/index.html" },
+    { "source": "/questions", "destination": "/index.html" },
+    { "source": "/polls", "destination": "/index.html" }
   ],
   "headers": [
     {
