@@ -27,6 +27,11 @@
   let supabase = null;
   let realtimeChannel = null;
   let bc = null;
+  let statePollTimer = null;
+  let statePollInFlight = false;
+  let statePollStopped = false;
+  let realtimeSubscribed = false;
+  let connectionMode = 'connecting';
   let adminAuthenticated = false;
   let activeAdminTab = 'control';
   let pollResults = new Map();
@@ -715,26 +720,29 @@
   }
 
   function updateConnectionUI(mode = null) {
+    if (mode) connectionMode = mode;
     const label = document.getElementById('connection-label');
     const pill = document.getElementById('connection-pill');
     if (!label || !pill) return;
-    const connected = mode === 'live' || (!!supabase && initialStateLoaded);
-    const error = mode === 'error';
+    const connected = ['realtime', 'polling', 'live'].includes(connectionMode) && initialStateLoaded;
+    const error = connectionMode === 'error';
     pill.classList.toggle('live', connected);
     pill.classList.toggle('error', error);
-    label.textContent = connected ? 'Synced' : error ? 'Offline' : 'Local';
+    label.textContent = connected
+      ? (connectionMode === 'realtime' ? 'Live Sync' : 'Synced')
+      : error ? 'Offline' : 'Connecting';
   }
 
   async function loadPublicConfig() {
     let cfg = window.KINGDOM_CONFIG || {};
-    if (cfg.supabaseUrl && cfg.supabaseAnonKey) return cfg;
+    if (cfg.supabaseUrl && (cfg.supabaseAnonKey || cfg.supabasePublishableKey)) return cfg;
     try {
       const response = await fetch('/api/config', { cache: 'no-store' });
       if (!response.ok) return cfg;
       const remote = await response.json();
       cfg = {
-        supabaseUrl: remote.supabaseUrl || '',
-        supabaseAnonKey: remote.supabaseAnonKey || ''
+        supabaseUrl: remote.supabaseUrl || cfg.supabaseUrl || '',
+        supabaseAnonKey: remote.supabaseAnonKey || remote.supabasePublishableKey || cfg.supabaseAnonKey || cfg.supabasePublishableKey || ''
       };
     } catch (error) {
       console.warn('Public config unavailable', error);
@@ -742,31 +750,83 @@
     return cfg;
   }
 
+  async function fetchPublicState() {
+    if (statePollInFlight) return false;
+    statePollInFlight = true;
+    try {
+      const response = await fetch(`/api/public-state?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' }
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || !body.state) throw new Error(body.error || 'State sync unavailable');
+      applyIncomingState(body.state, false);
+      initialStateLoaded = true;
+      if (!realtimeSubscribed) updateConnectionUI('polling');
+      return true;
+    } catch (error) {
+      console.warn('Public state polling unavailable', error);
+      if (!initialStateLoaded) updateConnectionUI('error');
+      return false;
+    } finally {
+      statePollInFlight = false;
+    }
+  }
+
+  function statePollDelay() {
+    if (document.hidden) return 1800;
+    return realtimeSubscribed ? 2000 : 300;
+  }
+
+  function scheduleNextStatePoll(delay = statePollDelay()) {
+    clearTimeout(statePollTimer);
+    if (statePollStopped) return;
+    statePollTimer = setTimeout(async () => {
+      await fetchPublicState();
+      scheduleNextStatePoll();
+    }, delay);
+  }
+
+  function startStatePolling() {
+    statePollStopped = false;
+    fetchPublicState().finally(() => scheduleNextStatePoll());
+  }
+
   async function initRealtime() {
     try {
       const cfg = await loadPublicConfig();
-      if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) {
-        updateConnectionUI('error');
+      const publicKey = cfg.supabaseAnonKey || cfg.supabasePublishableKey || '';
+      if (!cfg.supabaseUrl || !publicKey || !window.supabase) {
+        if (!initialStateLoaded) updateConnectionUI('polling');
         return;
       }
-      supabase = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+      supabase = window.supabase.createClient(cfg.supabaseUrl, publicKey, {
         auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
       });
       const { data, error } = await supabase.from('presentation_state').select('*').eq('id', STATE_ID).single();
       if (error) throw error;
       applyIncomingState(data, false);
       initialStateLoaded = true;
-      updateConnectionUI('live');
+      updateConnectionUI('polling');
       realtimeChannel = supabase.channel('kingdom-presentation-state')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'presentation_state', filter: `id=eq.${STATE_ID}` }, payload => applyIncomingState(payload.new, false))
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'presentation_state', filter: `id=eq.${STATE_ID}` }, payload => {
+          if (payload.new) applyIncomingState(payload.new, false);
+        })
         .subscribe(status => {
-          if (status === 'SUBSCRIBED') updateConnectionUI('live');
-          if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') updateConnectionUI('error');
+          if (status === 'SUBSCRIBED') {
+            realtimeSubscribed = true;
+            updateConnectionUI('realtime');
+          }
+          if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+            realtimeSubscribed = false;
+            updateConnectionUI(initialStateLoaded ? 'polling' : 'error');
+          }
         });
       schedulePollRefresh();
     } catch (error) {
-      console.warn('Realtime unavailable', error);
-      updateConnectionUI('error');
+      console.warn('Realtime unavailable; polling remains active', error);
+      realtimeSubscribed = false;
+      updateConnectionUI(initialStateLoaded ? 'polling' : 'error');
     }
   }
 
@@ -782,7 +842,11 @@
   }
 
   function applyIncomingState(next, broadcast = false) {
-    if (!next) return;
+    if (!next) return false;
+    const incomingVersion = String(next.updated_at || '');
+    const currentVersion = String(state.updated_at || '');
+    const sameStoredVersion = !broadcast && initialStateLoaded && incomingVersion && incomingVersion === currentVersion;
+    if (sameStoredVersion) return false;
     const oldReload = Number(state.reload_token || 0);
     state = {
       ...state,
@@ -795,6 +859,7 @@
     schedulePollRefresh();
     const newReload = Number(state.reload_token || 0);
     if (initialStateLoaded && OUTPUT_ROUTES.has(route) && newReload > oldReload) location.reload();
+    return true;
   }
 
   function parseJSONMaybe(value) {
@@ -910,16 +975,17 @@
   async function refreshPollResults(id = state.active_poll_id) {
     if (!id) return;
     try {
-      let rows = [];
+      let rows = null;
       if (supabase) {
         const { data, error } = await supabase.rpc('get_poll_results', { p_poll_id: id });
-        if (error) throw error;
-        rows = Array.isArray(data) ? data : [];
-      } else if (adminAuthenticated) {
-        const response = await fetch(`/api/admin-poll-results?poll_id=${encodeURIComponent(id)}`, { cache: 'no-store' });
-        const body = await response.json();
+        if (!error) rows = Array.isArray(data) ? data : [];
+      }
+      if (rows === null) {
+        const endpoint = adminAuthenticated ? '/api/admin-poll-results' : '/api/public-poll-results';
+        const response = await fetch(`${endpoint}?poll_id=${encodeURIComponent(id)}&t=${Date.now()}`, { cache: 'no-store' });
+        const body = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(body.error || 'Poll results failed');
-        rows = body.results || [];
+        rows = Array.isArray(body.results) ? body.results : [];
       }
       pollResults.set(id, rows);
       updateView();
@@ -1076,6 +1142,11 @@
   });
 
   window.addEventListener('resize', scalePreview);
+  document.addEventListener('visibilitychange', () => scheduleNextStatePoll(0));
+  window.addEventListener('beforeunload', () => {
+    statePollStopped = true;
+    clearTimeout(statePollTimer);
+  });
   document.addEventListener('keydown', event => {
     if (!adminAuthenticated || !['admin', 'remote'].includes(route)) return;
     if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
@@ -1101,6 +1172,7 @@
     renderRoute();
     scheduleQuestionRefresh();
     if (adminAuthenticated) refreshAllPollResults();
+    startStatePolling();
     await initRealtime();
   }
 

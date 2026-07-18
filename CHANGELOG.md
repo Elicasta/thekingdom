@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.2.0
+
+- Bound the build to Supabase project `jxddmdtwcosxljjkzcvc`.
+- Added support for current publishable and secret API key names while keeping legacy aliases.
+- Fixed new `sb_secret_...` keys being sent as invalid bearer JWTs.
+- Added a public server-state fallback for cross-network control when Realtime is unavailable.
+- Reduced fallback slide-sync latency to roughly 300 ms on visible screens.
+- Avoided rerendering unchanged state responses.
+- Added a public aggregate poll-results fallback.
+- Fixed the admin API clamping the new 33-slide deck to the old 23-slide limit.
+- Added an idempotent Supabase repair script and live-sync tests.
+
 ## 1.1.0
 
 - Updated the lesson to the Egypt/Jerusalem two-kingdom structure.

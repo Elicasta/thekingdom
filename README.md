@@ -42,35 +42,33 @@ Double-click any output route to enter or leave browser fullscreen.
 
 ## Supabase setup
 
-1. Create a new Supabase project.
+This build is already bound to project `jxddmdtwcosxljjkzcvc`.
+
+1. Open the project in Supabase.
 2. Open **SQL Editor**.
-3. Run `supabase/setup.sql` in full.
-4. In Supabase project settings, copy:
-   - Project URL
-   - Publishable or anon key
-   - Service role key
-5. Add the environment variables below to Vercel.
+3. For a fresh project, run `supabase/setup.sql` in full.
+4. For an existing project, run `supabase/fix-cross-network-sync.sql` in full.
+5. In **Settings → API Keys**, copy the publishable key and secret key.
+6. Add these environment variables to Vercel:
 
 ```text
-SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-SUPABASE_ANON_KEY=sb_publishable_YOUR_KEY
-SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+SUPABASE_URL=https://jxddmdtwcosxljjkzcvc.supabase.co
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_YOUR_KEY
+SUPABASE_SECRET_KEY=sb_secret_YOUR_SERVER_KEY
 ADMIN_PASSWORD=choose-a-long-admin-password
 SESSION_SECRET=choose-a-different-long-random-secret
 ```
 
-Do not put the service role key in `config.js`, browser code, GitHub, or screenshots.
+Legacy `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` names still work. New `sb_secret_...` keys are sent only through the `apikey` header. They are never exposed to browser code.
 
+After changing Vercel environment variables, redeploy the project. Old deployments do not receive the new values.
 
-### Existing Supabase project update
+### Live-sync behavior
 
-If the database already exists from the previous 23-slide build, run:
-
-```text
-supabase/update-lesson-egypt-jerusalem.sql
-```
-
-That updates the slide range to 0 through 32 and seeds the four current polls.
+- Supabase Realtime is the primary path for slide changes across networks.
+- A 300 ms server-state poll runs as a fallback when the WebSocket is unavailable.
+- Poll result screens also have a server fallback, so they do not depend on the browser publishable key.
+- The admin API now allows all 33 slides instead of clamping the deck at slide 23.
 
 ## Route behavior
 
@@ -102,6 +100,20 @@ The browser receives only the public Supabase URL and publishable key from `/api
 - OBS browser source: `/obslowerthirds` or `/obsslides`
 
 Set OBS browser-source backgrounds to transparent for `/obslowerthirds`. Use `?green=1` when chroma key is preferred.
+
+## Quick verification
+
+After deployment, open these routes on separate devices and networks:
+
+```text
+/admin
+/remote
+/projector
+```
+
+The connection pill should read **Live Sync** or **Synced**. Launch a poll from `/admin`, then open `/` on another phone. The poll should appear without a refresh.
+
+If admin actions return `Supabase is not configured`, the server secret key is missing in Vercel. If the connection pill stays offline, run `supabase/fix-cross-network-sync.sql` and redeploy after checking the publishable key.
 
 ## Audience data behavior
 

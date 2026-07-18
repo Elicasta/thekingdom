@@ -1,5 +1,6 @@
-// Leave blank in production. Vercel serves public Supabase settings from /api/config.
+// Public browser fallback. The publishable key is still served by /api/config.
 window.KINGDOM_CONFIG = window.KINGDOM_CONFIG || {
-  supabaseUrl: '',
-  supabaseAnonKey: ''
+  supabaseUrl: 'https://jxddmdtwcosxljjkzcvc.supabase.co',
+  supabaseAnonKey: '',
+  supabasePublishableKey: ''
 };

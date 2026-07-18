@@ -1,5 +1,5 @@
--- The Kingdom presentation system
--- Run this entire file once in Supabase SQL Editor.
+-- The Kingdom: cross-network control and poll repair
+-- Safe to run against an existing project. It restores state sync, poll functions, policies, grants, and Realtime publication.
 
 begin;
 
@@ -236,3 +236,15 @@ end $$;
 notify pgrst, 'reload schema';
 
 commit;
+
+
+-- Live system verification. Expected: realtime_enabled=true, state_row=true, poll_count=4.
+select
+  exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'presentation_state'
+  ) as realtime_enabled,
+  exists (select 1 from public.presentation_state where id = 'main') as state_row,
+  (select count(*) from public.polls where lesson_id = 'when-the-kingdom-falls') as poll_count;

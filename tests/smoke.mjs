@@ -56,6 +56,8 @@ const requiredFiles = [
   'api/admin-questions.js',
   'api/poll-vote.js',
   'api/question-submit.js',
+  'api/public-state.js',
+  'api/public-poll-results.js',
   'assets/kingdom-bg.png'
 ];
 for (const file of requiredFiles) {
