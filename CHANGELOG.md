@@ -64,3 +64,12 @@
 - Added Supabase realtime state synchronization and secure server-side admin writes.
 - Replaced the previous visual treatment with the supplied text-free storm background and its navy, cream, and burnt-orange palette.
 - Removed duplicate title rendering from the title slide.
+
+## 1.4.1 - Scripture takeover and join screen
+
+- Added a pre-lesson projector load screen with a QR code generated from the deployed audience URL.
+- Changed pushed Scripture from a lower overlay to a full-screen projector takeover.
+- Restored the current lesson slide automatically when Scripture is cleared.
+- Expanded Scripture slides to use the full KJV passage text.
+- Improved responsive spacing and typography for long Scripture passages.
+- Updated the service-worker cache to include lesson and QR assets.

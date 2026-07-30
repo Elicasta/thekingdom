@@ -177,13 +177,30 @@
     }
   }
 
-  function standbyHTML(label = 'Waiting for presenter') {
-    return `<div class="standby">
+  function audienceJoinURL() {
+    const configured = String(LESSON.joinUrl || '').trim();
+    if (configured) return configured;
+    return `${location.origin}/`;
+  }
+
+  function standbyHTML(label = 'Waiting for presenter', showJoinQR = false) {
+    return `<div class="standby${showJoinQR ? ' standby-with-qr' : ''}">
       <div class="standby-inner">
         <div class="standby-brand">THE <span>KINGDOM</span></div>
         <div class="standby-sub">${escapeHTML(LESSON.lessonNumber)} · ${escapeHTML(LESSON.title)} · ${escapeHTML(label)}</div>
+        ${showJoinQR ? `<div class="join-panel"><div class="join-copy"><div class="join-kicker">Join the lesson</div><div class="join-title">Scan before we begin</div><div class="join-url">${escapeHTML(audienceJoinURL().replace(/^https?:\/\//, ''))}</div></div><div class="join-qr" data-join-qr></div></div>` : ''}
       </div>
     </div>`;
+  }
+
+  function hydrateJoinQR(root) {
+    const target = root?.querySelector?.('[data-join-qr]');
+    if (!target) return;
+    if (!window.KingdomQR?.svg) {
+      target.innerHTML = '<div class="join-qr-fallback">Open the lesson URL on your phone</div>';
+      return;
+    }
+    target.innerHTML = window.KingdomQR.svg(audienceJoinURL(), { quietZone: 4 });
   }
 
   function currentSlide() {
@@ -332,16 +349,18 @@
     const root = document.getElementById('projector-content');
     if (!root) return;
     let html = '';
-    if (!state.started) html = standbyHTML('Main Projector');
+    if (!state.started) html = standbyHTML('Main Projector', true);
     else html = `<div class="slide-stage">${renderSlide(currentSlide(), clampSlide(state.current_slide))}</div>`;
     if (state.scripture_visible && state.active_scripture) {
-      html += `<div class="scripture-overlay"><div class="scripture-overlay-ref">${escapeHTML(state.active_scripture.ref)} · KJV</div><div class="scripture-overlay-text">${escapeHTML(state.active_scripture.text)}</div></div>`;
+      const long = state.active_scripture.text.length > 420 ? ' long' : '';
+      html += `<section class="scripture-takeover${long}"><div class="scripture-takeover-inner"><div class="scripture-takeover-ref">${escapeHTML(state.active_scripture.ref)} · KJV</div><div class="scripture-takeover-text">${escapeHTML(state.active_scripture.text)}</div></div></section>`;
     }
     const activePoll = currentPoll();
     if (state.poll_prompt_visible && activePoll) html += renderPollPromptOverlay(activePoll);
     if (state.poll_results_visible && activePoll) html += renderPollResultsOverlay(activePoll);
     if (state.blackout) html += '<div class="output-blackout"></div>';
     root.innerHTML = html;
+    hydrateJoinQR(root);
   }
 
   function renderScriptures() {

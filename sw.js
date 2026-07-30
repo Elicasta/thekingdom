@@ -1,11 +1,13 @@
 "use strict";
 
-const CACHE_NAME = "the-kingdom-v3";
+const CACHE_NAME = "the-kingdom-v4";
 const CORE_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./lesson.js",
+  "./qrcode-browser.js",
   "./manifest.webmanifest",
   "./assets/kingdom-bg.png",
   "./assets/icon-192.png",

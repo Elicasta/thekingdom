@@ -79,7 +79,7 @@ window.KINGDOM_LESSON = Object.freeze({
     {
       "type": "scripture",
       "ref": "Genesis 13:10",
-      "text": "And Lot lifted up his eyes, and beheld all the plain of Jordan...",
+      "text": "And Lot lifted up his eyes, and beheld all the plain of Jordan, that it was well watered every where, before the LORD destroyed Sodom and Gomorrah, even as the garden of the LORD, like the land of Egypt, as thou comest unto Zoar.",
       "notes": "Lot chose by sight instead of spiritual discernment. Lot saw what looked good, but he did not weigh where it would lead him spiritually."
     },
     {
