@@ -13,17 +13,17 @@ vm.createContext(context);
 vm.runInContext(lessonSource, context);
 const lesson = context.window.KINGDOM_LESSON;
 
-assert.equal(lesson.title, 'When the Kingdom Falls');
+assert.equal(lesson.title, 'Kingdom Decisions');
 assert.equal(lesson.series, 'The Kingdom');
-assert.equal(lesson.slides.length, 33, 'Expected exactly 33 slides');
-assert.equal(lesson.polls.length, 4, 'Expected exactly 4 lesson polls');
-assert.equal(lesson.reflectionGroups.length, 7, 'Expected seven reflection groups');
+assert.equal(lesson.slides.length, 19, 'Expected exactly 19 slides including six live polls');
+assert.equal(lesson.polls.length, 6, 'Expected exactly 6 lesson polls');
+assert.equal(lesson.reflectionGroups.length, 3, 'Expected discussion, reflection, and closing activity groups');
 assert.equal(lesson.slides[0].type, 'title');
-assert.equal(lesson.slides[0].title, 'When the Kingdom Falls');
+assert.equal(lesson.slides[0].title, 'Kingdom Decisions');
 assert.equal(lesson.slides.at(-1).type, 'closing');
-assert.ok(lesson.slides.some(slide => slide.ref === 'Exodus 5:1–2'), 'Missing Pharaoh question slide');
-assert.ok(lesson.polls.some(poll => poll.id === 'relief-or-surrender'), 'Missing relief/surrender poll');
-assert.ok(lesson.reflectionGroups.some(group => group.title === 'Follow the Two Kingdoms'), 'Missing two-kingdom reflection group');
+assert.ok(lesson.slides.some(slide => slide.ref === 'Matthew 6:33'), 'Missing opening Kingdom scripture');
+assert.ok(lesson.polls.some(poll => poll.id === 'lots-decision'), 'Missing Lot decision poll');
+assert.ok(lesson.reflectionGroups.some(group => group.title === 'Discussion Questions'), 'Missing discussion questions');
 
 
 const appSource = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
@@ -75,5 +75,7 @@ assert.ok(!/thekingdom5853585/i.test(allTextFiles), 'Stray secret-looking string
 
 const titleRenderSegment = appSource.slice(appSource.indexOf("case 'title':"), appSource.indexOf("case 'statement':"));
 assert.equal((titleRenderSegment.match(/slide-title/g) || []).length, 1, 'Title slide should render one title element');
+assert.ok(appSource.includes('statement-bullets'), 'Statement renderer must support lesson bullet lists');
+assert.ok(appSource.includes('title-scripture'), 'Title renderer must support the title scripture reference');
 
 console.log('The Kingdom smoke tests passed.');

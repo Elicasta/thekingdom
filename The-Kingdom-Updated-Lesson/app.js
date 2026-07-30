@@ -19,6 +19,7 @@
     active_scripture: null,
     scripture_visible: false,
     active_poll_id: null,
+    poll_prompt_visible: false,
     poll_results_visible: false,
     reload_token: 0,
     updated_at: new Date().toISOString()
@@ -27,6 +28,11 @@
   let supabase = null;
   let realtimeChannel = null;
   let bc = null;
+  let statePollTimer = null;
+  let statePollInFlight = false;
+  let statePollStopped = false;
+  let realtimeSubscribed = false;
+  let connectionMode = 'connecting';
   let adminAuthenticated = false;
   let activeAdminTab = 'control';
   let pollResults = new Map();
@@ -112,11 +118,14 @@
           <div class="slide-kicker">${escapeHTML(slide.eyebrow)}</div>
           <h1 class="slide-title">${escapeHTML(slide.title)}</h1>
           <div class="slide-copy">${escapeHTML(slide.subtitle)}</div>
+          ${slide.scripture ? `<div class="title-scripture">${escapeHTML(slide.scripture)}</div>` : ''}
         </section>`;
       case 'statement':
         return `<section class="slide statement-slide" data-slide-index="${index}">
           <div class="slide-kicker">${escapeHTML(slide.kicker || 'Key Line')}</div>
           <div class="slide-title">${escapeHTML(slide.title)}</div>
+          ${slide.text ? `<div class="slide-copy statement-copy">${escapeHTML(slide.text)}</div>` : ''}
+          ${Array.isArray(slide.bullets) && slide.bullets.length ? `<div class="statement-bullets">${slide.bullets.map(item => `<div class="statement-bullet">${escapeHTML(item)}</div>`).join('')}</div>` : ''}
         </section>`;
       case 'section':
         return `<section class="slide section-slide" data-slide-index="${index}">
@@ -187,6 +196,11 @@
 
   function currentPoll() {
     return LESSON.polls.find(p => p.id === state.active_poll_id) || null;
+  }
+
+  function pollSlideIndex(pollId) {
+    const index = LESSON.slides.findIndex(slide => slide.type === 'poll' && slide.pollId === pollId);
+    return index >= 0 ? index : null;
   }
 
   function deviceToken() {
@@ -323,7 +337,9 @@
     if (state.scripture_visible && state.active_scripture) {
       html += `<div class="scripture-overlay"><div class="scripture-overlay-ref">${escapeHTML(state.active_scripture.ref)} · KJV</div><div class="scripture-overlay-text">${escapeHTML(state.active_scripture.text)}</div></div>`;
     }
-    if (state.poll_results_visible && currentPoll()) html += renderPollResultsOverlay(currentPoll());
+    const activePoll = currentPoll();
+    if (state.poll_prompt_visible && activePoll) html += renderPollPromptOverlay(activePoll);
+    if (state.poll_results_visible && activePoll) html += renderPollResultsOverlay(activePoll);
     if (state.blackout) html += '<div class="output-blackout"></div>';
     root.innerHTML = html;
   }
@@ -524,7 +540,7 @@
         return `<article class="poll-admin-card"><div class="poll-admin-question">${escapeHTML(poll.question)}</div>
           <div class="poll-result-mini">${renderMiniResults(poll, results)}</div>
           <div class="poll-admin-actions">
-            <button class="mini-btn${isActive ? ' good' : ''}" data-action="launch-poll" data-poll-id="${escapeHTML(poll.id)}">${isActive ? 'Live' : 'Launch'}</button>
+            <button class="mini-btn${isActive ? ' good' : ''}" data-action="launch-poll" data-poll-id="${escapeHTML(poll.id)}">${isActive ? 'Live on Projector' : 'Launch to Projector'}</button>
             ${remote ? '' : `<button class="mini-btn" data-action="show-poll-results" data-poll-id="${escapeHTML(poll.id)}">Show Results</button><button class="mini-btn" data-action="hide-poll-results">Hide Results</button>`}
             <button class="mini-btn" data-action="close-poll" data-poll-id="${escapeHTML(poll.id)}">Close</button>
             ${remote ? '' : `<button class="mini-btn" data-action="reset-poll" data-poll-id="${escapeHTML(poll.id)}">Reset</button>`}
@@ -636,7 +652,7 @@
   function updatePollsPage() {
     const grid = document.getElementById('polls-page-grid');
     if (!grid) return;
-    grid.innerHTML = LESSON.polls.map(poll => `<section class="card"><div class="card-kicker">${state.active_poll_id === poll.id ? 'Live' : 'Lesson Poll'}</div><h2 class="card-title">${escapeHTML(poll.question)}</h2>${renderLargeResults(poll)}<div class="poll-admin-actions"><button class="mini-btn" data-action="launch-poll" data-poll-id="${escapeHTML(poll.id)}">Launch</button><button class="mini-btn" data-action="show-poll-results" data-poll-id="${escapeHTML(poll.id)}">Show on Projector</button><button class="mini-btn" data-action="close-poll" data-poll-id="${escapeHTML(poll.id)}">Close</button><button class="mini-btn" data-action="reset-poll" data-poll-id="${escapeHTML(poll.id)}">Reset</button></div></section>`).join('');
+    grid.innerHTML = LESSON.polls.map(poll => `<section class="card"><div class="card-kicker">${state.active_poll_id === poll.id ? 'Live' : 'Lesson Poll'}</div><h2 class="card-title">${escapeHTML(poll.question)}</h2>${renderLargeResults(poll)}<div class="poll-admin-actions"><button class="mini-btn" data-action="launch-poll" data-poll-id="${escapeHTML(poll.id)}">Launch to Projector</button><button class="mini-btn" data-action="show-poll-results" data-poll-id="${escapeHTML(poll.id)}">Show on Projector</button><button class="mini-btn" data-action="close-poll" data-poll-id="${escapeHTML(poll.id)}">Close</button><button class="mini-btn" data-action="reset-poll" data-poll-id="${escapeHTML(poll.id)}">Reset</button></div></section>`).join('');
   }
 
   function renderLargeResults(poll) {
@@ -648,6 +664,10 @@
       const pct = total ? Math.round((count / total) * 100) : 0;
       return `<div class="poll-result-row"><div class="poll-result-top"><span>${escapeHTML(option)}</span><span>${count} · ${pct}%</span></div><div class="poll-result-track"><div class="poll-result-fill" style="width:${pct}%"></div></div></div>`;
     }).join('')}<div class="poll-note">${total} response${total === 1 ? '' : 's'}</div></div>`;
+  }
+
+  function renderPollPromptOverlay(poll) {
+    return `<div class="poll-prompt-overlay"><div class="poll-prompt-card"><div class="slide-kicker">Live Poll</div><div class="poll-results-question">${escapeHTML(poll.question)}</div><div class="poll-projector-options">${poll.options.map(option => `<div class="poll-projector-option">${escapeHTML(option)}</div>`).join('')}</div><div class="poll-projector-note">Respond on your phone now</div></div></div>`;
   }
 
   function renderPollResultsOverlay(poll) {
@@ -715,26 +735,29 @@
   }
 
   function updateConnectionUI(mode = null) {
+    if (mode) connectionMode = mode;
     const label = document.getElementById('connection-label');
     const pill = document.getElementById('connection-pill');
     if (!label || !pill) return;
-    const connected = mode === 'live' || (!!supabase && initialStateLoaded);
-    const error = mode === 'error';
+    const connected = ['realtime', 'polling', 'live'].includes(connectionMode) && initialStateLoaded;
+    const error = connectionMode === 'error';
     pill.classList.toggle('live', connected);
     pill.classList.toggle('error', error);
-    label.textContent = connected ? 'Synced' : error ? 'Offline' : 'Local';
+    label.textContent = connected
+      ? (connectionMode === 'realtime' ? 'Live Sync' : 'Synced')
+      : error ? 'Offline' : 'Connecting';
   }
 
   async function loadPublicConfig() {
     let cfg = window.KINGDOM_CONFIG || {};
-    if (cfg.supabaseUrl && cfg.supabaseAnonKey) return cfg;
+    if (cfg.supabaseUrl && (cfg.supabaseAnonKey || cfg.supabasePublishableKey)) return cfg;
     try {
       const response = await fetch('/api/config', { cache: 'no-store' });
       if (!response.ok) return cfg;
       const remote = await response.json();
       cfg = {
-        supabaseUrl: remote.supabaseUrl || '',
-        supabaseAnonKey: remote.supabaseAnonKey || ''
+        supabaseUrl: remote.supabaseUrl || cfg.supabaseUrl || '',
+        supabaseAnonKey: remote.supabaseAnonKey || remote.supabasePublishableKey || cfg.supabaseAnonKey || cfg.supabasePublishableKey || ''
       };
     } catch (error) {
       console.warn('Public config unavailable', error);
@@ -742,31 +765,83 @@
     return cfg;
   }
 
+  async function fetchPublicState() {
+    if (statePollInFlight) return false;
+    statePollInFlight = true;
+    try {
+      const response = await fetch(`/api/public-state?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' }
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || !body.state) throw new Error(body.error || 'State sync unavailable');
+      applyIncomingState(body.state, false);
+      initialStateLoaded = true;
+      if (!realtimeSubscribed) updateConnectionUI('polling');
+      return true;
+    } catch (error) {
+      console.warn('Public state polling unavailable', error);
+      if (!initialStateLoaded) updateConnectionUI('error');
+      return false;
+    } finally {
+      statePollInFlight = false;
+    }
+  }
+
+  function statePollDelay() {
+    if (document.hidden) return 1800;
+    return realtimeSubscribed ? 2000 : 300;
+  }
+
+  function scheduleNextStatePoll(delay = statePollDelay()) {
+    clearTimeout(statePollTimer);
+    if (statePollStopped) return;
+    statePollTimer = setTimeout(async () => {
+      await fetchPublicState();
+      scheduleNextStatePoll();
+    }, delay);
+  }
+
+  function startStatePolling() {
+    statePollStopped = false;
+    fetchPublicState().finally(() => scheduleNextStatePoll());
+  }
+
   async function initRealtime() {
     try {
       const cfg = await loadPublicConfig();
-      if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) {
-        updateConnectionUI('error');
+      const publicKey = cfg.supabaseAnonKey || cfg.supabasePublishableKey || '';
+      if (!cfg.supabaseUrl || !publicKey || !window.supabase) {
+        if (!initialStateLoaded) updateConnectionUI('polling');
         return;
       }
-      supabase = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+      supabase = window.supabase.createClient(cfg.supabaseUrl, publicKey, {
         auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
       });
       const { data, error } = await supabase.from('presentation_state').select('*').eq('id', STATE_ID).single();
       if (error) throw error;
       applyIncomingState(data, false);
       initialStateLoaded = true;
-      updateConnectionUI('live');
+      updateConnectionUI('polling');
       realtimeChannel = supabase.channel('kingdom-presentation-state')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'presentation_state', filter: `id=eq.${STATE_ID}` }, payload => applyIncomingState(payload.new, false))
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'presentation_state', filter: `id=eq.${STATE_ID}` }, payload => {
+          if (payload.new) applyIncomingState(payload.new, false);
+        })
         .subscribe(status => {
-          if (status === 'SUBSCRIBED') updateConnectionUI('live');
-          if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') updateConnectionUI('error');
+          if (status === 'SUBSCRIBED') {
+            realtimeSubscribed = true;
+            updateConnectionUI('realtime');
+          }
+          if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+            realtimeSubscribed = false;
+            updateConnectionUI(initialStateLoaded ? 'polling' : 'error');
+          }
         });
       schedulePollRefresh();
     } catch (error) {
-      console.warn('Realtime unavailable', error);
-      updateConnectionUI('error');
+      console.warn('Realtime unavailable; polling remains active', error);
+      realtimeSubscribed = false;
+      updateConnectionUI(initialStateLoaded ? 'polling' : 'error');
     }
   }
 
@@ -782,7 +857,11 @@
   }
 
   function applyIncomingState(next, broadcast = false) {
-    if (!next) return;
+    if (!next) return false;
+    const incomingVersion = String(next.updated_at || '');
+    const currentVersion = String(state.updated_at || '');
+    const sameStoredVersion = !broadcast && initialStateLoaded && incomingVersion && incomingVersion === currentVersion;
+    if (sameStoredVersion) return false;
     const oldReload = Number(state.reload_token || 0);
     state = {
       ...state,
@@ -795,6 +874,7 @@
     schedulePollRefresh();
     const newReload = Number(state.reload_token || 0);
     if (initialStateLoaded && OUTPUT_ROUTES.has(route) && newReload > oldReload) location.reload();
+    return true;
   }
 
   function parseJSONMaybe(value) {
@@ -820,15 +900,15 @@
   }
 
   async function startPresentation() {
-    await patchState({ current_slide: 0, started: true, started_at: new Date().toISOString(), blackout: false });
+    await patchState({ current_slide: 0, started: true, started_at: new Date().toISOString(), blackout: false, poll_prompt_visible: false, poll_results_visible: false });
   }
 
   async function standbyPresentation() {
-    await patchState({ started: false, current_slide: 0, blackout: false, scripture_visible: false, active_scripture: null, active_poll_id: null, poll_results_visible: false });
+    await patchState({ started: false, current_slide: 0, blackout: false, scripture_visible: false, active_scripture: null, active_poll_id: null, poll_prompt_visible: false, poll_results_visible: false });
   }
 
   async function clearAll() {
-    await patchState({ blackout: false, scripture_visible: false, active_scripture: null, active_poll_id: null, poll_results_visible: false });
+    await patchState({ blackout: false, scripture_visible: false, active_scripture: null, active_poll_id: null, poll_prompt_visible: false, poll_results_visible: false });
   }
 
   async function pushScripture(id) {
@@ -844,14 +924,32 @@
   async function launchPoll(id) {
     const poll = LESSON.polls.find(item => item.id === id);
     if (!poll) return;
+    const slideIndex = pollSlideIndex(id);
+    const optimistic = {
+      ...state,
+      active_poll_id: id,
+      poll_prompt_visible: true,
+      poll_results_visible: false,
+      started: true,
+      blackout: false,
+      ...(slideIndex === null ? {} : { current_slide: slideIndex })
+    };
+    applyIncomingState(optimistic, true);
     try {
-      const response = await fetch('/api/admin-poll', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'launch', poll }) });
+      const response = await fetch('/api/admin-poll', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'launch', poll, slide_index: slideIndex })
+      });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body.error || 'Poll launch failed');
-      applyIncomingState(body.state || { ...state, active_poll_id: id, poll_results_visible: false }, true);
+      if (body.state) applyIncomingState(body.state, true);
       await refreshPollResults(id);
-      showToast('Poll is live.');
-    } catch (error) { showToast(error.message, true); }
+      showToast('Poll launched to projector.');
+    } catch (error) {
+      showToast(error.message, true);
+      await fetchLatestState(true);
+    }
   }
 
   async function pollAction(action, id = null) {
@@ -910,16 +1008,17 @@
   async function refreshPollResults(id = state.active_poll_id) {
     if (!id) return;
     try {
-      let rows = [];
+      let rows = null;
       if (supabase) {
         const { data, error } = await supabase.rpc('get_poll_results', { p_poll_id: id });
-        if (error) throw error;
-        rows = Array.isArray(data) ? data : [];
-      } else if (adminAuthenticated) {
-        const response = await fetch(`/api/admin-poll-results?poll_id=${encodeURIComponent(id)}`, { cache: 'no-store' });
-        const body = await response.json();
+        if (!error) rows = Array.isArray(data) ? data : [];
+      }
+      if (rows === null) {
+        const endpoint = adminAuthenticated ? '/api/admin-poll-results' : '/api/public-poll-results';
+        const response = await fetch(`${endpoint}?poll_id=${encodeURIComponent(id)}&t=${Date.now()}`, { cache: 'no-store' });
+        const body = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(body.error || 'Poll results failed');
-        rows = body.results || [];
+        rows = Array.isArray(body.results) ? body.results : [];
       }
       pollResults.set(id, rows);
       updateView();
@@ -1044,9 +1143,9 @@
     if (action === 'scroll-reflections') document.getElementById('reflections')?.scrollIntoView({ behavior: 'smooth' });
     if (action === 'vote') await submitVote(target.dataset.pollId, target.dataset.optionIndex, target);
     if (action === 'submit-question') await submitQuestion();
-    if (action === 'prev') await patchState({ current_slide: clampSlide(state.current_slide - 1), started: true });
-    if (action === 'next') await patchState({ current_slide: clampSlide(state.current_slide + 1), started: true });
-    if (action === 'goto-slide') await patchState({ current_slide: clampSlide(target.dataset.slideIndex), started: true });
+    if (action === 'prev') await patchState({ current_slide: clampSlide(state.current_slide - 1), started: true, poll_prompt_visible: false, poll_results_visible: false });
+    if (action === 'next') await patchState({ current_slide: clampSlide(state.current_slide + 1), started: true, poll_prompt_visible: false, poll_results_visible: false });
+    if (action === 'goto-slide') await patchState({ current_slide: clampSlide(target.dataset.slideIndex), started: true, poll_prompt_visible: false, poll_results_visible: false });
     if (action === 'start') await startPresentation();
     if (action === 'standby') await standbyPresentation();
     if (action === 'toggle-blackout') await patchState({ blackout: !state.blackout });
@@ -1076,11 +1175,16 @@
   });
 
   window.addEventListener('resize', scalePreview);
+  document.addEventListener('visibilitychange', () => scheduleNextStatePoll(0));
+  window.addEventListener('beforeunload', () => {
+    statePollStopped = true;
+    clearTimeout(statePollTimer);
+  });
   document.addEventListener('keydown', event => {
     if (!adminAuthenticated || !['admin', 'remote'].includes(route)) return;
     if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
-    if (event.key === 'ArrowRight' || event.key === ' ') { event.preventDefault(); patchState({ current_slide: clampSlide(state.current_slide + 1), started: true }); }
-    if (event.key === 'ArrowLeft') { event.preventDefault(); patchState({ current_slide: clampSlide(state.current_slide - 1), started: true }); }
+    if (event.key === 'ArrowRight' || event.key === ' ') { event.preventDefault(); patchState({ current_slide: clampSlide(state.current_slide + 1), started: true, poll_prompt_visible: false, poll_results_visible: false }); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); patchState({ current_slide: clampSlide(state.current_slide - 1), started: true, poll_prompt_visible: false, poll_results_visible: false }); }
     if (event.key.toLowerCase() === 'b') patchState({ blackout: !state.blackout });
   });
   if (OUTPUT_ROUTES.has(route)) {
@@ -1101,6 +1205,7 @@
     renderRoute();
     scheduleQuestionRefresh();
     if (adminAuthenticated) refreshAllPollResults();
+    startStatePolling();
     await initRealtime();
   }
 

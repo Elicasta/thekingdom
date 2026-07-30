@@ -1,249 +1,221 @@
 window.KINGDOM_LESSON = Object.freeze({
-  "id": "when-the-kingdom-falls",
+  "id": "kingdom-decisions",
   "series": "The Kingdom",
-  "lessonNumber": "Lesson Two",
-  "title": "When the Kingdom Falls",
-  "subtitle": "Egypt · Lamentations · Babylon",
+  "lessonNumber": "Lesson Three",
+  "title": "Kingdom Decisions",
+  "subtitle": "Seeking first what matters most",
   "presenter": "Elder Eli Castaneda",
   "slides": [
     {
       "type": "title",
-      "eyebrow": "Lesson Two",
-      "title": "When the Kingdom Falls",
-      "subtitle": "Egypt · Lamentations · Babylon",
-      "notes": "Open with the title. Let the room settle before placing Solomon, Egypt, and Jerusalem in the same frame."
-    },
-    {
-      "type": "statement",
-      "kicker": "Two Kingdoms",
-      "title": "Egypt and Jerusalem stand beside each other as witnesses.",
-      "notes": "Do not treat Egypt as a side illustration. Place it beside Jerusalem as another throne resisting the voice of God."
-    },
-    {
-      "type": "statement",
-      "kicker": "Egypt",
-      "title": "Egypt was wealthy, powerful, ancient, feared, and ruled by a Pharaoh who thought his word could challenge the word of the Lord.",
-      "notes": "Let Egypt feel large. Pharaoh was not a cartoon villain. He represented a kingdom that believed its power could answer God."
+      "eyebrow": "Lesson Three",
+      "title": "Kingdom Decisions",
+      "subtitle": "Seeking first what matters most",
+      "scripture": "Matthew 6:33 KJV",
+      "notes": "Tonight is about learning how to make decisions that are not just successful, but submitted to God."
     },
     {
       "type": "scripture",
-      "ref": "Exodus 5:1–2",
-      "text": "Who is the LORD, that I should obey his voice?",
-      "notes": "Name the question clearly. Pharaoh’s issue was the rule of God, not Moses’ personality."
+      "ref": "Matthew 6:33",
+      "text": "But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you.",
+      "notes": "The Kingdom must come before preference, comfort, timing, and opportunity. Jesus does not tell us to seek the Kingdom eventually. He says first."
     },
     {
       "type": "statement",
-      "kicker": "The Mirror",
-      "title": "The question is not whether we have been near God. The question is whether God presently rules us.",
-      "notes": "Bring Solomon and the youth into view. Nearness in the past is not the same as surrender in the present."
+      "kicker": "The Core Question",
+      "title": "Before I decide, what am I seeking first?",
+      "bullets": [
+        "My benefit?",
+        "My comfort?",
+        "People’s approval?",
+        "God’s Kingdom?"
+      ],
+      "notes": "Every decision reveals an order. Something is always first."
     },
     {
-      "type": "scripture",
-      "ref": "Joshua 24:15",
-      "text": "Choose you this day whom ye will serve.",
-      "notes": "Faith has to move from inherited exposure to personal surrender. The throne cannot remain undecided."
-    },
-    {
-      "type": "section",
-      "number": "01",
-      "title": "Ignored Warnings",
-      "notes": "Begin the first movement. God speaks before judgment arrives."
-    },
-    {
-      "type": "statement",
-      "kicker": "Two Messengers",
-      "title": "Moses stands before Pharaoh. Jeremiah stands before Judah. In both places, God sends a messenger before judgment arrives.",
-      "notes": "Moses and Jeremiah create the parallel: pagan throne and covenant people, both hearing God before consequence."
-    },
-    {
-      "type": "scripture",
-      "ref": "2 Chronicles 36:15–16",
-      "text": "And the LORD God of their fathers sent to them by his messengers… because he had compassion… till there was no remedy.",
-      "notes": "The warning is compassion. God exposes the road before they reach its end."
-    },
-    {
-      "type": "statement",
-      "kicker": "Relief Is Not Surrender",
-      "title": "Pharaoh wanted the plagues gone, but he wanted to keep the throne.",
-      "notes": "This is the diagnostic line. We can want conviction to stop without wanting repentance to begin."
+      "type": "poll",
+      "pollId": "decision-making-filter",
+      "kicker": "Live Poll 1",
+      "question": "When making a major decision, what do people usually consider first?",
+      "options": [
+        "What benefits me?",
+        "What feels easiest?",
+        "What others will think?",
+        "What benefits the Kingdom?"
+      ],
+      "notes": "Kingdom decisions begin when God’s rule comes before personal preference."
     },
     {
       "type": "split-statement",
       "lines": [
-        "Not answering is an answer.",
-        "Delay is not neutral."
+        "A successful decision can look right outwardly.",
+        "A Kingdom decision is right before God."
       ],
-      "notes": "Hearing without responding trains the heart to refuse again."
+      "notes": "Immediate results do not always prove spiritual alignment. Something can work and still not be God’s will."
+    },
+    {
+      "type": "statement",
+      "kicker": "Good vs. God",
+      "title": "Not every good opportunity is a God opportunity.",
+      "bullets": [
+        "Good can still distract.",
+        "Good can still be premature.",
+        "Good can still pull you away from obedience."
+      ],
+      "notes": "The enemy does not always use bad things. Sometimes distraction comes dressed as opportunity."
     },
     {
       "type": "poll",
-      "pollId": "ignored-warning",
-      "kicker": "Live Poll 1",
-      "question": "Do you feel like you’ve been ignoring a warning God has already been giving you?",
+      "pollId": "good-vs-god",
+      "kicker": "Live Poll 2",
+      "question": "Can something be good and still not be God’s will for your life?",
       "options": [
         "Yes",
         "No",
         "Not sure"
       ],
-      "notes": "Launch Poll 1 from admin. Give the room time to answer without commentary."
-    },
-    {
-      "type": "section",
-      "number": "02",
-      "title": "Jerusalem Falls. Egypt Trembles.",
-      "notes": "Move from warning into visible consequence. Jeremiah sits in the rubble. Egypt feels the collapse of Pharaoh’s resistance."
+      "notes": "Not every good opportunity is a God opportunity."
     },
     {
       "type": "scripture",
-      "ref": "Lamentations 1:1",
-      "text": "How doth the city sit solitary, that was full of people!",
-      "notes": "Jeremiah is no longer warning about what might happen. He is sitting inside what happened."
-    },
-    {
-      "type": "statement",
-      "kicker": "Kingdoms Brought Low",
-      "title": "Egypt shows a proud kingdom brought low because its ruler defied God. Jerusalem shows a covenant people brought low because they ignored God.",
-      "notes": "One says the question out loud. The other answers through years of refusal."
-    },
-    {
-      "type": "statement",
-      "kicker": "Throne Decisions Travel",
-      "title": "Pharaoh’s hardened heart affected Egypt. Solomon’s drift affected Israel.",
-      "notes": "A throne decision never stays private. What rules the heart eventually flows through the life."
-    },
-    {
-      "type": "statement",
-      "kicker": "Follow the Thread",
-      "title": "Private compromise becomes public culture over time.",
-      "notes": "What Solomon permitted near the throne became normal across a nation."
+      "ref": "Genesis 13:10",
+      "text": "And Lot lifted up his eyes, and beheld all the plain of Jordan...",
+      "notes": "Lot chose by sight instead of spiritual discernment. Lot saw what looked good, but he did not weigh where it would lead him spiritually."
     },
     {
       "type": "poll",
-      "pollId": "where-drift-happens",
-      "kicker": "Live Poll 2",
-      "question": "Where do you see drift happen most?",
+      "pollId": "lots-decision",
+      "kicker": "Live Poll 3",
+      "question": "What was Lot’s main mistake in Genesis 13?",
+      "options": [
+        "He moved too slowly",
+        "He chose by sight instead of by spiritual discernment",
+        "He asked too many questions",
+        "He refused Abraham’s offer"
+      ],
+      "notes": "Kingdom decisions cannot be made by appearance alone."
+    },
+    {
+      "type": "statement",
+      "kicker": "The Danger of Choosing by Sight",
+      "title": "What looks fruitful can still be dangerous.",
+      "bullets": [
+        "It can be close to compromise.",
+        "It can weaken convictions.",
+        "It can place you near the wrong influences."
+      ],
+      "notes": "Kingdom decisions cannot be made by appearance alone."
+    },
+    {
+      "type": "statement",
+      "kicker": "People Influence Purpose",
+      "title": "The wrong voices can slowly pull you away from the Kingdom.",
+      "bullets": [
+        "Relationships shape direction.",
+        "Counsel shapes confidence.",
+        "Companionship shapes convictions."
+      ],
+      "notes": "Some people do not have to directly oppose God to slowly move you away from Him."
+    },
+    {
+      "type": "poll",
+      "pollId": "people-and-purpose",
+      "kicker": "Live Poll 4",
+      "question": "Which area most often influences someone’s spiritual direction?",
       "options": [
         "Relationships",
-        "Private habits",
-        "Entertainment",
-        "Attitude",
-        "Pride"
+        "Money",
+        "Location",
+        "Career"
       ],
-      "notes": "Launch Poll 2. Use the answers to name practical manifestations of drift."
-    },
-    {
-      "type": "section",
-      "number": "03",
-      "title": "Babylon, Egypt, and Final Judgment",
-      "notes": "Babylon gives a picture of exile. Egypt gives a picture of overthrow. Revelation shows final judgment."
-    },
-    {
-      "type": "contrast",
-      "left": {
-        "label": "Babylon",
-        "text": "Exile you can picture."
-      },
-      "right": {
-        "label": "Hell",
-        "text": "Judgment you cannot undo."
-      },
-      "notes": "Babylonian captivity had a return. Final judgment does not."
-    },
-    {
-      "type": "scripture",
-      "ref": "Exodus 14:27–28",
-      "text": "The sea returned… and the LORD overthrew the Egyptians in the midst of the sea.",
-      "notes": "Pharaoh kept reaching for control until the path closed over him."
+      "notes": "People influence purpose. The wrong voices can slowly pull someone away from the Kingdom."
     },
     {
       "type": "statement",
-      "kicker": "The Red Sea",
-      "title": "The same waters that became deliverance for Israel became judgment for Egypt.",
-      "notes": "This line must land slowly. The same moment can be mercy for one and judgment for another depending on response to God."
-    },
-    {
-      "type": "scripture-summary",
-      "ref": "Revelation 20:11–15",
-      "title": "The Great White Throne",
-      "lines": [
-        "The books are opened.",
-        "The lake of fire.",
-        "The second death."
+      "kicker": "Timing Matters",
+      "title": "Waiting is not wasted when it is obedience.",
+      "bullets": [
+        "Delay does not mean denial.",
+        "Preparation does not mean punishment.",
+        "Silence does not mean absence."
       ],
-      "notes": "Do not turn this into spectacle. Let the permanence of judgment carry the weight."
-    },
-    {
-      "type": "section",
-      "number": "04",
-      "title": "A Breath of Mercy",
-      "notes": "Mercy appears inside the rubble, but also before the rubble. It warns before collapse."
-    },
-    {
-      "type": "scripture",
-      "ref": "Lamentations 3:22–23",
-      "text": "It is of the LORD’S mercies that we are not consumed… They are new every morning: great is thy faithfulness.",
-      "notes": "New mercy means another opportunity to answer God. It does not promise unlimited mornings."
-    },
-    {
-      "type": "statement",
-      "kicker": "Mercy Before Collapse",
-      "title": "Mercy is not only God removing pain. Mercy is God speaking before pain becomes final.",
-      "notes": "Tie Egypt and Jerusalem together. Every warning was an expression of mercy before the door closed."
+      "notes": "Rushing can create problems obedience would have avoided."
     },
     {
       "type": "poll",
-      "pollId": "mercy-response",
-      "kicker": "Live Poll 3",
-      "question": "What do you need to do with mercy today?",
+      "pollId": "timing",
+      "kicker": "Live Poll 5",
+      "question": "What is hardest about waiting on God’s timing?",
       "options": [
-        "Repent",
-        "Ask for prayer",
-        "Change a boundary",
-        "Talk to a leader"
+        "Feeling delayed",
+        "Watching others move ahead",
+        "Not knowing the full plan",
+        "Trusting God when nothing changes"
       ],
-      "notes": "Launch Poll 3. This moves the room from diagnosis into response."
+      "notes": "Waiting is not wasted when it is part of obedience."
+    },
+    {
+      "type": "split-statement",
+      "lines": [
+        "God does not only weigh what we do.",
+        "He weighs why we do it."
+      ],
+      "notes": "Same action. Different motive. Different result before God. Two people can do the same thing, but only one can please God because the heart is different."
+    },
+    {
+      "type": "poll",
+      "pollId": "motives",
+      "kicker": "Live Poll 6",
+      "question": "Why do motives matter in Kingdom decisions?",
+      "options": [
+        "God sees the heart",
+        "Motives shape actions",
+        "The right action can still come from the wrong reason",
+        "All of the above"
+      ],
+      "notes": "God does not only weigh what we do. He weighs why we do it."
     },
     {
       "type": "statement",
-      "kicker": "The Lie",
-      "title": "“I have time.”",
-      "notes": "Many believe the truth but postpone their response to it."
+      "kicker": "Kingdom Decision Filter",
+      "title": "Ask before you decide:",
+      "bullets": [
+        "Does this advance God’s Kingdom?",
+        "Does this align with God’s righteousness?",
+        "Does this bring me closer to Christ?",
+        "Does this serve eternal purposes?",
+        "Can I ask God to bless this with a clear conscience?"
+      ],
+      "notes": "These questions help expose whether God is truly first."
     },
     {
       "type": "statement",
-      "kicker": "Pharaoh and Jerusalem",
-      "title": "Each refusal seemed survivable until the night Egypt could not sleep through. Each warning seemed survivable until Babylon arrived.",
-      "notes": "Connect the emotional weight of Egypt’s night and Jerusalem’s collapse without rushing."
-    },
-    {
-      "type": "scripture",
-      "ref": "Hebrews 9:27",
-      "text": "And as it is appointed unto men once to die, but after this the judgment.",
-      "notes": "Hold this beside Lamentations 3. Mercy is available, but our number of mornings is not ours to control."
-    },
-    {
-      "type": "scripture",
-      "ref": "Acts 2:38",
-      "text": "Repent, and be baptized every one of you in the name of Jesus Christ for the remission of sins, and ye shall receive the gift of the Holy Ghost.",
-      "notes": "Salvation calls for a response: repentance, baptism in Jesus’ name, and the Holy Ghost."
-    },
-    {
-      "type": "scripture",
-      "ref": "Titus 2:11–12",
-      "text": "…teaching us that, denying ungodliness and worldly lusts, we should live soberly, righteously, and godly, in this present world.",
-      "notes": "Grace teaches. It does not excuse the life the cross came to transform."
+      "kicker": "Reflection",
+      "title": "What decision needs to be submitted to God first?",
+      "text": "Do not ask God to bless a direction He never led you into.",
+      "notes": "This is where the lesson becomes personal."
     },
     {
       "type": "closing",
-      "title": "Every ignored warning felt survivable until the day it was not.",
-      "text": "Mercy gives us today, but mercy was never given so we could postpone obedience.",
-      "notes": "Do not rush the end. Leave the room with responsibility, alignment, and a concrete response."
+      "title": "Before you decide, seek first the Kingdom.",
+      "text": "Matthew 6:33 KJV",
+      "notes": "If the Kingdom is first, the decision has the right foundation."
     }
   ],
   "polls": [
     {
-      "id": "ignored-warning",
-      "question": "Have you been ignoring a warning God has been giving you?",
+      "id": "decision-making-filter",
+      "question": "When making a major decision, what do people usually consider first?",
+      "options": [
+        "What benefits me?",
+        "What feels easiest?",
+        "What others will think?",
+        "What benefits the Kingdom?"
+      ]
+    },
+    {
+      "id": "good-vs-god",
+      "question": "Can something be good and still not be God’s will for your life?",
       "options": [
         "Yes",
         "No",
@@ -251,181 +223,122 @@ window.KINGDOM_LESSON = Object.freeze({
       ]
     },
     {
-      "id": "where-drift-happens",
-      "question": "Where does drift happen most for you?",
+      "id": "people-and-purpose",
+      "question": "Which area most often influences someone’s spiritual direction?",
       "options": [
         "Relationships",
-        "Private habits",
-        "Entertainment",
-        "Attitude",
-        "Pride"
+        "Money",
+        "Location",
+        "Career"
       ]
     },
     {
-      "id": "relief-or-surrender",
-      "question": "What do you want most right now?",
+      "id": "timing",
+      "question": "What is hardest about waiting on God’s timing?",
       "options": [
-        "Relief",
-        "Surrender",
-        "Both",
-        "I’m not sure"
+        "Feeling delayed",
+        "Watching others move ahead",
+        "Not knowing the full plan",
+        "Trusting God when nothing changes"
       ]
     },
     {
-      "id": "mercy-response",
-      "question": "What do you need to do with mercy today?",
+      "id": "motives",
+      "question": "Why do motives matter in Kingdom decisions?",
       "options": [
-        "Repent",
-        "Ask for prayer",
-        "Change a boundary",
-        "Talk to a leader"
+        "God sees the heart",
+        "Motives shape actions",
+        "The right action can still come from the wrong reason",
+        "All of the above"
+      ]
+    },
+    {
+      "id": "lots-decision",
+      "question": "What was Lot’s main mistake in Genesis 13?",
+      "options": [
+        "He moved too slowly",
+        "He chose by sight instead of by spiritual discernment",
+        "He asked too many questions",
+        "He refused Abraham’s offer"
       ]
     }
   ],
   "scriptures": [
     {
-      "id": "exodus-5-1-2",
-      "ref": "Exodus 5:1–2",
-      "text": "And afterward Moses and Aaron went in, and told Pharaoh, Thus saith the LORD God of Israel, Let my people go, that they may hold a feast unto me in the wilderness. And Pharaoh said, Who is the LORD, that I should obey his voice to let Israel go? I know not the LORD, neither will I let Israel go."
+      "id": "matthew-6-33",
+      "ref": "Matthew 6:33",
+      "text": "But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you."
     },
     {
-      "id": "joshua-24-15",
-      "ref": "Joshua 24:15",
-      "text": "And if it seem evil unto you to serve the LORD, choose you this day whom ye will serve; whether the gods which your fathers served that were on the other side of the flood, or the gods of the Amorites, in whose land ye dwell: but as for me and my house, we will serve the LORD."
+      "id": "genesis-13-10",
+      "ref": "Genesis 13:10",
+      "text": "And Lot lifted up his eyes, and beheld all the plain of Jordan, that it was well watered every where, before the LORD destroyed Sodom and Gomorrah, even as the garden of the LORD, like the land of Egypt, as thou comest unto Zoar."
     },
     {
-      "id": "2-chronicles-36-15-16",
-      "ref": "2 Chronicles 36:15–16",
-      "text": "And the LORD God of their fathers sent to them by his messengers, rising up betimes, and sending; because he had compassion on his people, and on his dwelling place: But they mocked the messengers of God, and despised his words, and misused his prophets, until the wrath of the LORD arose against his people, till there was no remedy."
+      "id": "proverbs-3-5-6",
+      "ref": "Proverbs 3:5–6",
+      "text": "Trust in the LORD with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths."
     },
     {
-      "id": "lamentations-1-1",
-      "ref": "Lamentations 1:1",
-      "text": "How doth the city sit solitary, that was full of people! how is she become as a widow! she that was great among the nations, and princess among the provinces, how is she become tributary!"
+      "id": "proverbs-13-20",
+      "ref": "Proverbs 13:20",
+      "text": "He that walketh with wise men shall be wise: but a companion of fools shall be destroyed."
     },
     {
-      "id": "2-kings-25-8-11",
-      "ref": "2 Kings 25:8–11",
-      "text": "And he burnt the house of the LORD, and the king’s house, and all the houses of Jerusalem, and every great man’s house burnt he with fire. And all the army of the Chaldees, that were with the captain of the guard, brake down the walls of Jerusalem round about. Now the rest of the people that were left in the city, and the fugitives that fell away to the king of Babylon, with the remnant of the multitude, did Nebuzaradan the captain of the guard carry away."
+      "id": "ecclesiastes-3-1",
+      "ref": "Ecclesiastes 3:1",
+      "text": "To every thing there is a season, and a time to every purpose under the heaven."
     },
     {
-      "id": "exodus-14-26-28",
-      "ref": "Exodus 14:26–28",
-      "text": "And the LORD said unto Moses, Stretch out thine hand over the sea, that the waters may come again upon the Egyptians, upon their chariots, and upon their horsemen. And Moses stretched forth his hand over the sea, and the sea returned to his strength when the morning appeared; and the Egyptians fled against it; and the LORD overthrew the Egyptians in the midst of the sea. And the waters returned, and covered the chariots, and the horsemen, and all the host of Pharaoh that came into the sea after them; there remained not so much as one of them."
+      "id": "proverbs-16-2",
+      "ref": "Proverbs 16:2",
+      "text": "All the ways of a man are clean in his own eyes; but the LORD weigheth the spirits."
     },
     {
-      "id": "revelation-20-11-15",
-      "ref": "Revelation 20:11–15",
-      "text": "And I saw a great white throne, and him that sat on it, from whose face the earth and the heaven fled away; and there was found no place for them. And I saw the dead, small and great, stand before God; and the books were opened: and another book was opened, which is the book of life: and the dead were judged out of those things which were written in the books, according to their works. And the sea gave up the dead which were in it; and death and hell delivered up the dead which were in them: and they were judged every man according to their works. And death and hell were cast into the lake of fire. This is the second death. And whosoever was not found written in the book of life was cast into the lake of fire."
-    },
-    {
-      "id": "revelation-21-3-4",
-      "ref": "Revelation 21:3–4",
-      "text": "And I heard a great voice out of heaven saying, Behold, the tabernacle of God is with men, and he will dwell with them, and they shall be his people, and God himself shall be with them, and be their God. And God shall wipe away all tears from their eyes; and there shall be no more death, neither sorrow, nor crying, neither shall there be any more pain: for the former things are passed away."
-    },
-    {
-      "id": "lamentations-3-22-23",
-      "ref": "Lamentations 3:22–23",
-      "text": "It is of the LORD’S mercies that we are not consumed, because his compassions fail not. They are new every morning: great is thy faithfulness."
-    },
-    {
-      "id": "hebrews-9-27",
-      "ref": "Hebrews 9:27",
-      "text": "And as it is appointed unto men once to die, but after this the judgment."
-    },
-    {
-      "id": "john-3-16",
-      "ref": "John 3:16",
-      "text": "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."
-    },
-    {
-      "id": "acts-2-37",
-      "ref": "Acts 2:37",
-      "text": "Now when they heard this, they were pricked in their heart, and said unto Peter and to the rest of the apostles, Men and brethren, what shall we do?"
-    },
-    {
-      "id": "acts-2-38",
-      "ref": "Acts 2:38",
-      "text": "Then Peter said unto them, Repent, and be baptized every one of you in the name of Jesus Christ for the remission of sins, and ye shall receive the gift of the Holy Ghost."
-    },
-    {
-      "id": "titus-2-11-12",
-      "ref": "Titus 2:11–12",
-      "text": "For the grace of God that bringeth salvation hath appeared to all men, teaching us that, denying ungodliness and worldly lusts, we should live soberly, righteously, and godly, in this present world."
-    },
-    {
-      "id": "romans-6-1-2",
-      "ref": "Romans 6:1–2",
-      "text": "What shall we say then? Shall we continue in sin, that grace may abound? God forbid. How shall we, that are dead to sin, live any longer therein?"
-    },
-    {
-      "id": "2-corinthians-6-2",
-      "ref": "2 Corinthians 6:2",
-      "text": "Behold, now is the accepted time; behold, now is the day of salvation."
+      "id": "jeremiah-17-9",
+      "ref": "Jeremiah 17:9",
+      "text": "The heart is deceitful above all things, and desperately wicked: who can know it?"
     }
   ],
   "reflectionGroups": [
     {
-      "title": "Follow the Two Kingdoms",
+      "title": "Discussion Questions",
       "questions": [
-        "What does Pharaoh’s question, “Who is the LORD, that I should obey his voice,” reveal about the human heart?",
-        "Where do I see Pharaoh in myself: denial, negotiation, temporary surrender, or hardening after relief?",
-        "Where do I see Jerusalem in myself: hearing truth often, but becoming slow to respond?",
-        "Which warning feels familiar because I have heard it more than once?"
+        "What is the difference between a successful decision and a Kingdom decision?",
+        "Why do you think Jesus said to seek the Kingdom first instead of comfort, success, or happiness first?",
+        "What is one decision people often ask God to bless after they have already made it?",
+        "How can a person tell whether an opportunity is good, but not God’s will for them?",
+        "Why do relationships have such a strong effect on spiritual direction?",
+        "What are some signs that someone is rushing ahead of God’s timing?",
+        "How can location affect someone’s spiritual life, purpose, or calling?",
+        "Why is it possible for two people to do the same thing, but only one of them please God?",
+        "What distractions can slowly pull someone away from the Kingdom without looking sinful at first?",
+        "What does Lot’s story teach us about making decisions based only on what looks good?",
+        "How do we balance peace in our heart with obedience when obedience feels difficult?",
+        "Why should we judge decisions by God’s Word instead of immediate results?",
+        "What is one Kingdom question you need to start asking before making decisions?"
       ]
     },
     {
-      "title": "Survival Is Not Safety",
+      "title": "Personal Reflection",
       "questions": [
-        "Where have I confused survival with safety?",
-        "What have I survived spiritually that I should not keep repeating?",
-        "What warning have I heard repeatedly, and what would obedience look like?",
-        "What does “delay is not neutral” mean in my current season?"
+        "Who am I allowing to influence my decisions?",
+        "What decision am I currently making that needs to be submitted to God first?",
+        "Am I choosing what benefits me, or what benefits the Kingdom?",
+        "Is there an area where I have been asking God to bless my will instead of seeking His will?",
+        "Can I ask God to bless my current direction with a clear conscience?"
       ]
     },
     {
-      "title": "Drift and Consequences",
+      "title": "Closing Activity",
       "questions": [
-        "What was one small decision that started moving me away from God?",
-        "What am I tolerating that is slowly altering what I love?",
-        "What would happen if I continued this direction for a year?",
-        "Who could be affected if I keep protecting this compromise?"
-      ]
-    },
-    {
-      "title": "Relief vs Surrender",
-      "questions": [
-        "Where am I asking God to remove discomfort without surrendering control?",
-        "What “plague” do I want gone while still wanting to keep the throne?",
-        "What would repentance look like if I stopped negotiating?",
-        "If God is not on the throne, what is?"
-      ]
-    },
-    {
-      "title": "Mercy and Urgency",
-      "questions": [
-        "How have I treated mercy like permission instead of opportunity?",
-        "What does the lie “I have time” sound like in my own words?",
-        "What morning, altar call, message, or warning have I been taking for granted?",
-        "What would I do today if I truly believed tomorrow does not belong to me?"
-      ]
-    },
-    {
-      "title": "Salvation Response",
-      "questions": [
-        "What part of Acts 2:38 am I resisting: repentance, baptism, or the Holy Ghost?",
-        "What does it mean for salvation to change who governs me before death?",
-        "Where has grace been teaching me to deny ungodliness?",
-        "What is one concrete step I will take in the next 24 hours?"
-      ]
-    },
-    {
-      "title": "Leader Questions",
-      "questions": [
-        "What are two boundaries that protect the throne of my heart?",
-        "Who is one person I need to talk to for accountability?",
-        "What is the difference between wanting relief and wanting repentance?",
-        "How can we tell when mercy is being received instead of abused?"
+        "Write down one decision you are currently facing.",
+        "Does this advance God’s Kingdom?",
+        "Does this align with God’s righteousness?",
+        "Does this bring me closer to Christ?",
+        "Does this serve eternal purposes?",
+        "Can I ask God to bless this with a clear conscience?",
+        "Before you decide, seek first the Kingdom."
       ]
     }
   ]

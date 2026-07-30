@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.0 - Kingdom Decisions
+
+- Replaced the previous lesson data with **Kingdom Decisions: Seeking first what matters most**.
+- Added 19 presentation slides, including six live poll slides placed beside their teaching points.
+- Added all six audience polls, 13 discussion questions, five personal reflection questions, and the closing decision-filter activity.
+- Added the complete KJV scripture library used by the lesson.
+- Extended statement slides to render supporting text and bullet lists.
+- Extended title slides to render a scripture reference.
+- Updated smoke tests to lock the new lesson structure and prevent missing supporting content.
+
 ## 1.1.0
 
 - Updated the lesson to the Egypt/Jerusalem two-kingdom structure.

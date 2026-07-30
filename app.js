@@ -118,11 +118,14 @@
           <div class="slide-kicker">${escapeHTML(slide.eyebrow)}</div>
           <h1 class="slide-title">${escapeHTML(slide.title)}</h1>
           <div class="slide-copy">${escapeHTML(slide.subtitle)}</div>
+          ${slide.scripture ? `<div class="title-scripture">${escapeHTML(slide.scripture)}</div>` : ''}
         </section>`;
       case 'statement':
         return `<section class="slide statement-slide" data-slide-index="${index}">
           <div class="slide-kicker">${escapeHTML(slide.kicker || 'Key Line')}</div>
           <div class="slide-title">${escapeHTML(slide.title)}</div>
+          ${slide.text ? `<div class="slide-copy statement-copy">${escapeHTML(slide.text)}</div>` : ''}
+          ${Array.isArray(slide.bullets) && slide.bullets.length ? `<div class="statement-bullets">${slide.bullets.map(item => `<div class="statement-bullet">${escapeHTML(item)}</div>`).join('')}</div>` : ''}
         </section>`;
       case 'section':
         return `<section class="slide section-slide" data-slide-index="${index}">

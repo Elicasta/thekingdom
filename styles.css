@@ -528,3 +528,44 @@ a { color: inherit; }
   .presenter-controls .btn { padding: 8px; font-size: .65rem; }
   .admin-head-actions .output-link { display: none; }
 }
+
+/* Lesson Three: supporting content */
+.title-scripture {
+  margin-top: clamp(1rem, 2vw, 2rem);
+  padding-top: clamp(0.8rem, 1.5vw, 1.25rem);
+  border-top: 1px solid rgba(199, 164, 94, 0.7);
+  font-size: clamp(0.9rem, 1.4vw, 1.25rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.statement-copy {
+  max-width: 70ch;
+  margin-top: clamp(1rem, 2vw, 1.75rem);
+}
+
+.statement-bullets {
+  display: grid;
+  gap: clamp(0.6rem, 1.1vw, 1rem);
+  width: min(100%, 980px);
+  margin-top: clamp(1.25rem, 2.5vw, 2.5rem);
+}
+
+.statement-bullet {
+  position: relative;
+  padding-left: 1.35em;
+  font-size: clamp(1rem, 2vw, 1.75rem);
+  line-height: 1.28;
+  color: var(--text);
+}
+
+.statement-bullet::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.58em;
+  width: 0.45em;
+  height: 1px;
+  background: var(--gold);
+}
