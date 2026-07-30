@@ -1,3 +1,10 @@
+## 1.4.2
+
+- Restored large-format projector typography for statements, polls, and full KJV scripture.
+- Added separate short, medium, long, and extra-long sizing so text stays large without overflowing.
+- Increased supporting copy, bullet, reference, and pushed-scripture scale on large screens.
+- Bumped offline cache to v6.
+
 # Changelog
 
 ## 1.4.1 - Presentation Polish
