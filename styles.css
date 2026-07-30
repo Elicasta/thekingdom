@@ -629,3 +629,85 @@ a { color: inherit; }
   .join-panel { justify-content: center; flex-wrap: wrap; }
   .join-copy { min-width: 0; }
 }
+
+/* Lesson presentation polish: centered content and balanced type */
+.scripture-slide,
+.poll-slide {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.scripture-slide .slide-ref,
+.scripture-slide .scripture-text,
+.poll-slide .slide-kicker,
+.poll-slide .slide-title {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.scripture-slide .scripture-text {
+  width: min(100%, 1500px);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.poll-slide .slide-title {
+  width: min(100%, 1420px);
+  text-align: center;
+  text-wrap: balance;
+  line-height: .94;
+}
+
+/* Question-only poll slides. Voting options remain available only in the audience/admin poll UI. */
+.poll-slide-options { display: none !important; }
+
+/* Content-aware typography prevents short slides from shouting and long slides from cramping. */
+.statement-slide.density-short .slide-title,
+.poll-slide.density-short .slide-title { font-size: clamp(4.6rem, 7.2vw, 8.4rem); }
+
+.statement-slide.density-md .slide-title,
+.poll-slide.density-md .slide-title { font-size: clamp(3.7rem, 5.8vw, 6.8rem); }
+
+.statement-slide.density-lg .slide-title,
+.poll-slide.density-lg .slide-title { font-size: clamp(3rem, 4.7vw, 5.5rem); line-height: .98; }
+
+.statement-slide.density-xl .slide-title,
+.poll-slide.density-xl .slide-title { font-size: clamp(2.5rem, 3.8vw, 4.5rem); line-height: 1.02; }
+
+.statement-slide.density-lg .statement-copy,
+.statement-slide.density-xl .statement-copy { font-size: clamp(1rem, 1.65vw, 1.65rem); }
+
+.statement-slide.density-lg .statement-bullet,
+.statement-slide.density-xl .statement-bullet { font-size: clamp(.95rem, 1.55vw, 1.5rem); }
+
+.scripture-slide.density-md .scripture-text { font-size: clamp(2.05rem, 4vw, 4.8rem); }
+.scripture-slide.density-lg .scripture-text { font-size: clamp(1.75rem, 3.25vw, 3.9rem); line-height: 1.15; }
+.scripture-slide.density-xl .scripture-text { font-size: clamp(1.45rem, 2.7vw, 3.25rem); line-height: 1.18; }
+
+/* Full-screen pushed Scripture is centered as well. */
+.scripture-takeover-inner,
+.scripture-output > div {
+  text-align: center;
+  margin-inline: auto;
+}
+
+.scripture-takeover-ref,
+.scripture-takeover-text,
+.scripture-output-ref,
+.scripture-output-text {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Poll overlays are centered for operator-triggered use. */
+.poll-prompt-card,
+.poll-results-card { text-align: center; margin-inline: auto; }
+.poll-projector-options { margin-left: auto; margin-right: auto; }
+.poll-results-question { text-wrap: balance; }
+
+@media (max-width: 900px) {
+  .poll-slide .slide-title { line-height: 1; }
+  .scripture-slide,
+  .poll-slide { padding-inline: 34px; }
+}

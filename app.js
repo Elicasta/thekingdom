@@ -110,6 +110,15 @@
     return slide.kicker || slide.subtitle || '';
   }
 
+  function contentDensityClass(text = '') {
+    const length = String(text).trim().length;
+    if (length > 150) return ' density-xl';
+    if (length > 95) return ' density-lg';
+    if (length > 55) return ' density-md';
+    if (length < 24) return ' density-short';
+    return '';
+  }
+
   function renderSlide(slide, index = 0) {
     const n = String(index + 1).padStart(2, '0');
     switch (slide.type) {
@@ -120,13 +129,15 @@
           <div class="slide-copy">${escapeHTML(slide.subtitle)}</div>
           ${slide.scripture ? `<div class="title-scripture">${escapeHTML(slide.scripture)}</div>` : ''}
         </section>`;
-      case 'statement':
-        return `<section class="slide statement-slide" data-slide-index="${index}">
+      case 'statement': {
+        const density = contentDensityClass([slide.title, slide.text, ...(slide.bullets || [])].filter(Boolean).join(' '));
+        return `<section class="slide statement-slide${density}" data-slide-index="${index}">
           <div class="slide-kicker">${escapeHTML(slide.kicker || 'Key Line')}</div>
           <div class="slide-title">${escapeHTML(slide.title)}</div>
           ${slide.text ? `<div class="slide-copy statement-copy">${escapeHTML(slide.text)}</div>` : ''}
           ${Array.isArray(slide.bullets) && slide.bullets.length ? `<div class="statement-bullets">${slide.bullets.map(item => `<div class="statement-bullet">${escapeHTML(item)}</div>`).join('')}</div>` : ''}
         </section>`;
+      }
       case 'section':
         return `<section class="slide section-slide" data-slide-index="${index}">
           <div class="section-number">${escapeHTML(slide.number || n)}</div>
@@ -136,7 +147,8 @@
         </section>`;
       case 'scripture': {
         const long = slide.text.length > 310 ? ' long' : '';
-        return `<section class="slide scripture-slide${long}" data-slide-index="${index}">
+        const density = contentDensityClass(slide.text);
+        return `<section class="slide scripture-slide${long}${density}" data-slide-index="${index}">
           <div class="slide-ref">${escapeHTML(slide.ref)} · KJV</div>
           <div class="scripture-text">“${escapeHTML(slide.text)}”</div>
         </section>`;
@@ -146,12 +158,13 @@
           <div class="slide-kicker">Key Lines</div>
           <div class="split-lines">${slide.lines.map(line => `<div class="split-line">${escapeHTML(line)}</div>`).join('')}</div>
         </section>`;
-      case 'poll':
-        return `<section class="slide poll-slide" data-slide-index="${index}">
-          <div class="slide-kicker">${escapeHTML(slide.kicker)}</div>
+      case 'poll': {
+        const density = contentDensityClass(slide.question);
+        return `<section class="slide poll-slide${density}" data-slide-index="${index}">
+          <div class="slide-kicker">${escapeHTML(slide.kicker || 'Discussion Question')}</div>
           <div class="slide-title">${escapeHTML(slide.question)}</div>
-          <div class="poll-slide-options">${slide.options.map(option => `<div class="poll-slide-option">${escapeHTML(option)}</div>`).join('')}</div>
         </section>`;
+      }
       case 'contrast':
         return `<section class="slide" data-slide-index="${index}">
           <div class="slide-kicker">Captivity vs Judgment</div>

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.1 - Presentation Polish
+
+- Centered lesson Scripture slides, pushed full-screen Scripture, poll questions, and poll result headings.
+- Changed lesson poll slides to show only the question, with no answer choices on the presentation screen.
+- Kept audience voting options inside the audience and admin interfaces for deliberate live-poll use.
+- Added content-aware type sizing for statements, questions, and long Scripture passages.
+- Improved spacing, line height, text balance, and mobile presentation margins.
+- Bumped the offline cache so deployed devices receive the updated visual system.
+
 ## 1.4.0 - Kingdom Decisions
 
 - Replaced the previous lesson data with **Kingdom Decisions: Seeking first what matters most**.

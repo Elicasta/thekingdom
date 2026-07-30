@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "the-kingdom-v4";
+const CACHE_NAME = "the-kingdom-v5";
 const CORE_ASSETS = [
   "./",
   "./index.html",
